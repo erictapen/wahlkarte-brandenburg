@@ -44,6 +44,7 @@ fn main() {
     });
 
     use std::io::Write;
-    let mut out_file = File::create("out.geo.json").unwrap();
-    out_file.write_all(geojson.to_string().as_bytes()).unwrap();
+    let mut out_file = File::create("geojson.js").unwrap();
+    let js_str = format!("var geojsonFeature = {}", geojson.to_string());
+    out_file.write_all(js_str.as_bytes()).unwrap();
 }
