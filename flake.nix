@@ -35,6 +35,8 @@
         mkdir -p $out/leaflet@${leaflet.version}/dist
         ln -s ${leaflet.js}  $out/leaflet@${leaflet.version}/dist/leaflet.js
         ln -s ${leaflet.css} $out/leaflet@${leaflet.version}/dist/leaflet.css
+        cp $src/generate-boundaries/out.geo.json $out/out.geo.json
+        cp $src/geojson.js $out/
       '';
 
     };
