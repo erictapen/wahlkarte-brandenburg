@@ -1,11 +1,7 @@
 {
   edition = 201909;
 
-  description = "Olga Website";
-
-  inputs = {
-    nixpkgs.flake = false;
-  };
+  description = "Wahlkarte Brandenburg";
 
   outputs =
     { self, nixpkgs }: rec {
