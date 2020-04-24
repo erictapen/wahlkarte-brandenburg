@@ -15,3 +15,5 @@ geojson = { version = "*", features = ["geo-types"] }
 geo-types = "*"
 serde_json = "*"
 regex = "*"
+docopt = "*"
+serde = { version = "*", features = ["derive"] }
