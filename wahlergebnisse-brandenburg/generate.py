@@ -4,8 +4,13 @@ from openpyxl import load_workbook
 from collections import defaultdict
 
 import json
+import sys
 
-workbook = load_workbook(filename = "raw/DL_BB_EU2019.xlsx")
+# first arg: the DL_BB_EU2019.xlsx file
+# second arg: the JSON output path
+
+
+workbook = load_workbook(filename = sys.argv[1])
 
 worksheet = workbook["Brandenburg_Europawahl_W"]
 
@@ -63,5 +68,5 @@ for line in range(2, 3813):
         # }
         # result.update(partydict)
 
-with open("out.json", "w", encoding="utf-8") as out_file:
+with open(sys.argv[2], "w", encoding="utf-8") as out_file:
     json.dump(result, out_file, ensure_ascii=False, indent=4)

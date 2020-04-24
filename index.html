@@ -9,16 +9,36 @@
 
     <link rel="stylesheet" href="leaflet@1.6.0/dist/leaflet.css"/>
     <script src="leaflet@1.6.0/dist/leaflet.js"></script>
-    <script src="geojson.js"></script>
 </head>
 <body>
 
 <div id="mapid" style="height: 800px;"></div>
 <script>
+  function loadJSON(path, success, error)
+  {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function()
+      {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                  if (success)
+                      success(JSON.parse(xhr.responseText));
+              } else {
+                  if (error)
+                      error(xhr);
+              }
+          }
+      };
+      xhr.open("GET", path, true);
+      xhr.send();
+  }
 
-	var mymap = L.map('mapid').setView([52.392, 13.387], 8);
+  loadJSON('boundaries.json',
+    function(data) { L.geoJSON(data).addTo(mymap); },
+    function(xhr) { console.error(xhr); }
+  );
 
-	L.geoJSON(geojsonFeature).addTo(mymap);
+  var mymap = L.map('mapid').setView([52.392, 13.387], 8);
 
 </script>
 </body>
