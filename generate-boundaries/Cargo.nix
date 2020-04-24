@@ -85,9 +85,9 @@ rec {
       };
       "aho-corasick" = rec {
         crateName = "aho-corasick";
-        version = "0.7.8";
+        version = "0.7.10";
         edition = "2015";
-        sha256 = "048q5vr1qac4lf90z80lw8kcya6qmlxw857xhwxsssk832jdafkl";
+        sha256 = "1nka9509afjgal6lpymn8w2lq11dmjwxs8yjcmzys966if5l05l7";
         libName = "aho_corasick";
         authors = [
           "Andrew Gallant <jamslam@gmail.com>"
@@ -117,9 +117,9 @@ rec {
       };
       "backtrace" = rec {
         crateName = "backtrace";
-        version = "0.3.44";
+        version = "0.3.46";
         edition = "2018";
-        sha256 = "0djmbf6caj7qm2p7jw6wzjxc83sji9gdd8vjp9mg2g0gyjdnn0z4";
+        sha256 = "17hh1vrhfd01qpjilrdpy7q0lf2j2qv36achpg37q92rff4r5rmi";
         authors = [
           "The Rust Project Developers"
         ];
@@ -128,6 +128,7 @@ rec {
             name = "backtrace-sys";
             packageId = "backtrace-sys";
             optional = true;
+            usesDefaultFeatures = false;
           }
           {
             name = "cfg-if";
@@ -146,7 +147,7 @@ rec {
         features = {
           "default" = [ "std" "libunwind" "libbacktrace" "dladdr" "dbghelp" ];
           "gimli-symbolize" = [ "addr2line" "findshlibs" "memmap" "goblin" ];
-          "libbacktrace" = [ "backtrace-sys" ];
+          "libbacktrace" = [ "backtrace-sys/backtrace-sys" ];
           "rustc-dep-of-std" = [ "backtrace-sys/rustc-dep-of-std" "cfg-if/rustc-dep-of-std" "core" "compiler_builtins" "libc/rustc-dep-of-std" "rustc-demangle/rustc-dep-of-std" ];
           "serialize-rustc" = [ "rustc-serialize" ];
           "serialize-serde" = [ "serde" ];
@@ -156,9 +157,9 @@ rec {
       };
       "backtrace-sys" = rec {
         crateName = "backtrace-sys";
-        version = "0.1.32";
+        version = "0.1.36";
         edition = "2015";
-        sha256 = "14c406z8bdmms8a5l8cv79jfkz1mk10qk5p97izf4vai53qparax";
+        sha256 = "1iqvmqsnnk1n55l1rl9d6v8fghngvsfas28kbm4a4m8jxqc8g13q";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
         ];
@@ -176,8 +177,10 @@ rec {
           }
         ];
         features = {
+          "default" = [ "backtrace-sys" ];
           "rustc-dep-of-std" = [ "core" "compiler_builtins" ];
         };
+        resolvedDefaultFeatures = [ "backtrace-sys" ];
       };
       "byteorder" = rec {
         crateName = "byteorder";
@@ -194,10 +197,10 @@ rec {
       };
       "cc" = rec {
         crateName = "cc";
-        version = "1.0.50";
+        version = "1.0.52";
         edition = "2018";
         crateBin = [];
-        sha256 = "1kdqm8ka7xg9h56b694pcz29ka33fsz27mzrphqc78gx96h8zqlm";
+        sha256 = "07g3qpa0gab3b0niw5ljzak6lgq34zjsv98hylxd0b59sqippn63";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
         ];
@@ -269,9 +272,9 @@ rec {
       };
       "failure" = rec {
         crateName = "failure";
-        version = "0.1.6";
+        version = "0.1.7";
         edition = "2015";
-        sha256 = "1nay5c2cgi40kp84rbiir1dgwlh9aap9jazbnxfmqrkpr49ky9zq";
+        sha256 = "0js6i6mb42q1g6q3csfbmi6q40s64k96705xbim0d8zg44j9qlmq";
         authors = [
           "Without Boats <boats@mozilla.com>"
         ];
@@ -296,9 +299,9 @@ rec {
       };
       "failure_derive" = rec {
         crateName = "failure_derive";
-        version = "0.1.6";
+        version = "0.1.7";
         edition = "2015";
-        sha256 = "022xfb9wcs1bdssfm2airsrfxpn2ccpbyh1ld2wf9483isvjbhhb";
+        sha256 = "0cfjz0c9szqpxn43b2r722p6m3swzxj7aj6xhqw23ml7h8y762h3";
         procMacro = true;
         authors = [
           "Without Boats <woboats@gmail.com>"
@@ -358,9 +361,9 @@ rec {
       };
       "flate2" = rec {
         crateName = "flate2";
-        version = "1.0.13";
+        version = "1.0.14";
         edition = "2018";
-        sha256 = "03rwyh691j20ih2vcskwp1sinhf9paggrkv32fvzwli9fpsddmkb";
+        sha256 = "0hlb2zmn5ixrgr0i1qvrd3a7j4fpp002d0kddn2hm7hjj49z9zrc";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
         ];
@@ -389,10 +392,11 @@ rec {
           }
         ];
         features = {
+          "cloudflare_zlib" = [ "any_zlib" "cloudflare-zlib-sys" ];
           "default" = [ "rust_backend" ];
           "rust_backend" = [ "miniz_oxide" ];
           "tokio" = [ "tokio-io" "futures" ];
-          "zlib" = [ "libz-sys" ];
+          "zlib" = [ "any_zlib" "libz-sys" ];
         };
         resolvedDefaultFeatures = [ "default" "miniz_oxide" "rust_backend" ];
       };
@@ -453,11 +457,11 @@ rec {
           }
           {
             name = "geo";
-            packageId = "geo";
+            packageId = "geo 0.13.0";
           }
           {
             name = "geo-types";
-            packageId = "geo-types";
+            packageId = "geo-types 0.4.3";
           }
           {
             name = "geojson";
@@ -492,7 +496,7 @@ rec {
         ];
         
       };
-      "geo" = rec {
+      "geo 0.12.2" = rec {
         crateName = "geo";
         version = "0.12.2";
         edition = "2018";
@@ -507,7 +511,7 @@ rec {
           }
           {
             name = "geo-types";
-            packageId = "geo-types";
+            packageId = "geo-types 0.4.3";
             features = [ "rstar" ];
           }
           {
@@ -516,7 +520,7 @@ rec {
           }
           {
             name = "rstar";
-            packageId = "rstar";
+            packageId = "rstar 0.2.0";
           }
         ];
         features = {
@@ -526,7 +530,37 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" ];
       };
-      "geo-types" = rec {
+      "geo 0.13.0" = rec {
+        crateName = "geo";
+        version = "0.13.0";
+        edition = "2018";
+        sha256 = "0kfz0idrb56n3ld2y8pwvmggd542zw7hh3vyjv4jzr12afwg65b3";
+        authors = [
+          "Corey Farwell <coreyf@rwell.org>"
+        ];
+        dependencies = [
+          {
+            name = "geo-types";
+            packageId = "geo-types 0.5.0";
+            features = [ "rstar" ];
+          }
+          {
+            name = "num-traits";
+            packageId = "num-traits";
+          }
+          {
+            name = "rstar";
+            packageId = "rstar 0.7.1";
+          }
+        ];
+        features = {
+          "postgis-integration" = [ "postgis" ];
+          "use-proj" = [ "proj" ];
+          "use-serde" = [ "serde" "geo-types/serde" ];
+        };
+        resolvedDefaultFeatures = [ "default" ];
+      };
+      "geo-types 0.4.3" = rec {
         crateName = "geo-types";
         version = "0.4.3";
         edition = "2018";
@@ -541,7 +575,29 @@ rec {
           }
           {
             name = "rstar";
-            packageId = "rstar";
+            packageId = "rstar 0.2.0";
+            optional = true;
+          }
+        ];
+        
+        resolvedDefaultFeatures = [ "rstar" ];
+      };
+      "geo-types 0.5.0" = rec {
+        crateName = "geo-types";
+        version = "0.5.0";
+        edition = "2018";
+        sha256 = "0bdfkdzp2c9sll1dq3rmbmwqm5c4rxxc6lqh8h0ncdji9hg0bzz0";
+        authors = [
+          "Corey Farwell <coreyf@rwell.org>"
+        ];
+        dependencies = [
+          {
+            name = "num-traits";
+            packageId = "num-traits";
+          }
+          {
+            name = "rstar";
+            packageId = "rstar 0.7.1";
             optional = true;
           }
         ];
@@ -560,7 +616,7 @@ rec {
         dependencies = [
           {
             name = "geo-types";
-            packageId = "geo-types";
+            packageId = "geo-types 0.4.3";
             optional = true;
           }
           {
@@ -581,9 +637,9 @@ rec {
       };
       "hermit-abi" = rec {
         crateName = "hermit-abi";
-        version = "0.1.7";
+        version = "0.1.11";
         edition = "2015";
-        sha256 = "0rxvb73c6fny5xpncx8qginph8ygfhnzw9z4fyyc1yqr74a5zig2";
+        sha256 = "05dzdbm3jcdpvp4c13gds405li7q9bpzscrxx5j1hyll1xz763ca";
         authors = [
           "Stefan Lankes"
         ];
@@ -625,9 +681,9 @@ rec {
       };
       "libc" = rec {
         crateName = "libc";
-        version = "0.2.66";
+        version = "0.2.69";
         edition = "2015";
-        sha256 = "0n0mwry21fxfwc063k33mvxk8xj7ia5ar8m42c9ymbam2ksb25fm";
+        sha256 = "0180d47sglxzjh5rkdl077zxmsiafd53gqbz9q2sj8ab9445rs4r";
         authors = [
           "The Rust Project Developers"
         ];
@@ -658,9 +714,9 @@ rec {
       };
       "memchr" = rec {
         crateName = "memchr";
-        version = "2.3.2";
+        version = "2.3.3";
         edition = "2015";
-        sha256 = "0y1rjc2afcxdf8lg4h31ivlfil242s2ivilpfiwkdx51h7imsi2k";
+        sha256 = "0074pvsfl938ndl5js14ibc7i9q0k3zp390z843w8nlyv4bxha1p";
         authors = [
           "Andrew Gallant <jamslam@gmail.com>"
           "bluss"
@@ -709,9 +765,9 @@ rec {
       };
       "num_cpus" = rec {
         crateName = "num_cpus";
-        version = "1.12.0";
+        version = "1.13.0";
         edition = "2015";
-        sha256 = "1riw641hsmp2vwb9wz7d26dsycrjbw3zf4nd6p18kzw5y1a3a826";
+        sha256 = "1cv6yxhz2zbnwn8pn1yn8grg7zsnd523947fby41a737aqvryj85";
         authors = [
           "Sean McArthur <sean@seanmonstar.com>"
         ];
@@ -740,11 +796,11 @@ rec {
         dependencies = [
           {
             name = "geo";
-            packageId = "geo";
+            packageId = "geo 0.12.2";
           }
           {
             name = "geo-types";
-            packageId = "geo-types";
+            packageId = "geo-types 0.4.3";
           }
           {
             name = "log";
@@ -852,11 +908,12 @@ rec {
       };
       "proc-macro2" = rec {
         crateName = "proc-macro2";
-        version = "1.0.8";
+        version = "1.0.10";
         edition = "2018";
-        sha256 = "0j45p176fnw0d02dzcky9sxyr4fadiggq07skmblwspqdxy33jrs";
+        sha256 = "1qxbnl8i3a5b2nxb8kdxbq6kj3pd1ckhm35wm7z3jd7n5wlns96z";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
+          "David Tolnay <dtolnay@gmail.com>"
         ];
         dependencies = [
           {
@@ -871,9 +928,9 @@ rec {
       };
       "protobuf" = rec {
         crateName = "protobuf";
-        version = "2.10.1";
+        version = "2.14.0";
         edition = "2015";
-        sha256 = "1ifkffc7qbn3fhnhyj7c2108a85mryr8g9pjnn3jdglddbcxv1k6";
+        sha256 = "11bl8hf522s9mbkckivnn9n8s3ss4g41w6jmfdsswmr5adqd71lf";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -884,10 +941,10 @@ rec {
       };
       "protobuf-codegen" = rec {
         crateName = "protobuf-codegen";
-        version = "2.10.1";
+        version = "2.14.0";
         edition = "2015";
         crateBin = [];
-        sha256 = "08wdpm6ys9kpwv7q1r2j6pnqv11m7q67dkb8b2875z7pxhg44mk4";
+        sha256 = "031bx325lsgcx7wc76vc2cqph6q0b34jgc8nz0g2rkwcfnx3n4fy";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -901,10 +958,10 @@ rec {
       };
       "protobuf-codegen-pure" = rec {
         crateName = "protobuf-codegen-pure";
-        version = "2.10.1";
+        version = "2.14.0";
         edition = "2015";
         crateBin = [];
-        sha256 = "1j8mrhj2cmx7fgbmzcq3d27ird3axasql84hpqrk61xnb8nv8z2a";
+        sha256 = "0h34gfqlb7bqmgqv1mfgy5wk35z5r2h5ki3p3pdcmw1vqzmly6id";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -932,9 +989,9 @@ rec {
       };
       "quote" = rec {
         crateName = "quote";
-        version = "1.0.2";
+        version = "1.0.3";
         edition = "2018";
-        sha256 = "1zkc46ryacf2jdkc6krsy2z615xbk1x8kp1830rcxz3irj5qqfh5";
+        sha256 = "0zwd6fp74xfg4jnnnwj4v84lkzif2giwj4ch1hka9g35ghc6rp1b";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -953,9 +1010,9 @@ rec {
       };
       "regex" = rec {
         crateName = "regex";
-        version = "1.3.4";
+        version = "1.3.7";
         edition = "2015";
-        sha256 = "1a1mh9mgr8jipnxdaykla6xlw4a6kjn2bzkq3cifx8xy4ivzjb1j";
+        sha256 = "14knp8k0r89lf6qanv0nh93br09q8lksd0hvf561kqr2941hy0m6";
         authors = [
           "The Rust Project Developers"
         ];
@@ -982,11 +1039,11 @@ rec {
           }
         ];
         features = {
-          "default" = [ "std" "perf" "unicode" ];
+          "default" = [ "std" "perf" "unicode" "regex-syntax/default" ];
           "perf" = [ "perf-cache" "perf-dfa" "perf-inline" "perf-literal" ];
           "perf-cache" = [ "thread_local" ];
           "perf-literal" = [ "aho-corasick" "memchr" ];
-          "unicode" = [ "unicode-age" "unicode-bool" "unicode-case" "unicode-gencat" "unicode-perl" "unicode-script" "unicode-segment" ];
+          "unicode" = [ "unicode-age" "unicode-bool" "unicode-case" "unicode-gencat" "unicode-perl" "unicode-script" "unicode-segment" "regex-syntax/unicode" ];
           "unicode-age" = [ "regex-syntax/unicode-age" ];
           "unicode-bool" = [ "regex-syntax/unicode-bool" ];
           "unicode-case" = [ "regex-syntax/unicode-case" ];
@@ -1001,9 +1058,9 @@ rec {
       };
       "regex-syntax" = rec {
         crateName = "regex-syntax";
-        version = "0.6.14";
+        version = "0.6.17";
         edition = "2015";
-        sha256 = "01myl8xqpbnird23xnsb92sjmz1cmp69r6m7y3dwbpmsx4zzx3dj";
+        sha256 = "1blmlgzcg7in3kcxqabpfzzrbnamr2i671flbrmlqhfps5bvvrbz";
         authors = [
           "The Rust Project Developers"
         ];
@@ -1011,7 +1068,7 @@ rec {
           "default" = [ "unicode" ];
           "unicode" = [ "unicode-age" "unicode-bool" "unicode-case" "unicode-gencat" "unicode-perl" "unicode-script" "unicode-segment" ];
         };
-        resolvedDefaultFeatures = [ "unicode-age" "unicode-bool" "unicode-case" "unicode-gencat" "unicode-perl" "unicode-script" "unicode-segment" ];
+        resolvedDefaultFeatures = [ "default" "unicode" "unicode-age" "unicode-bool" "unicode-case" "unicode-gencat" "unicode-perl" "unicode-script" "unicode-segment" ];
       };
       "rental" = rec {
         crateName = "rental";
@@ -1064,7 +1121,7 @@ rec {
         ];
         
       };
-      "rstar" = rec {
+      "rstar 0.2.0" = rec {
         crateName = "rstar";
         version = "0.2.0";
         edition = "2018";
@@ -1091,6 +1148,28 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" ];
       };
+      "rstar 0.7.1" = rec {
+        crateName = "rstar";
+        version = "0.7.1";
+        edition = "2018";
+        sha256 = "1dpna9h1k7gfswq48qni4nd9vvf6ib70y5bisrpp5lfbasmfll06";
+        authors = [
+          "Stefan Altmayer <stoeoef@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "num-traits";
+            packageId = "num-traits";
+          }
+          {
+            name = "pdqselect";
+            packageId = "pdqselect";
+          }
+        ];
+        features = {
+        };
+        resolvedDefaultFeatures = [ "default" ];
+      };
       "rustc-demangle" = rec {
         crateName = "rustc-demangle";
         version = "0.1.16";
@@ -1105,9 +1184,9 @@ rec {
       };
       "ryu" = rec {
         crateName = "ryu";
-        version = "1.0.2";
+        version = "1.0.4";
         edition = "2015";
-        sha256 = "1j0h74f1xqf9hjkhanp8i20mqc1aw35kr1iq9i79q7713mn51a5z";
+        sha256 = "1qa1g46584i1qvfpn8a96b2f1p4hslkfzrky7zmyyc24qqmn2ggd";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -1116,9 +1195,9 @@ rec {
       };
       "serde" = rec {
         crateName = "serde";
-        version = "1.0.104";
+        version = "1.0.106";
         edition = "2015";
-        sha256 = "0ja4mgw4p42syjk7jkzwhj2yg6llfrfm7vn8rvy7v3c1bzr1aha1";
+        sha256 = "169kg1px2k0hlxziiikdwy42wnrs2gjbvsv7yxygcwi08736mprn";
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
           "David Tolnay <dtolnay@gmail.com>"
@@ -1144,9 +1223,9 @@ rec {
       };
       "serde_derive" = rec {
         crateName = "serde_derive";
-        version = "1.0.104";
+        version = "1.0.106";
         edition = "2015";
-        sha256 = "0r7gjlwfry44b4ylz524ynjp9v3qiwdj4c588lh94aas78q9x3qj";
+        sha256 = "0v7a2rkpx9hi70pv2wr2h0h07rgmr7gi37v0s4dn5f2gpwx9wm4y";
         procMacro = true;
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
@@ -1173,9 +1252,9 @@ rec {
       };
       "serde_json" = rec {
         crateName = "serde_json";
-        version = "1.0.48";
+        version = "1.0.51";
         edition = "2018";
-        sha256 = "09cwggp707hf0qswzrg00nffr09prx99f6qlajqnqbacbpksswck";
+        sha256 = "1acd43sc1g9w4hzfa2kfbahj44r61fxqh14s3qsnhcv2w9zba1ys";
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
           "David Tolnay <dtolnay@gmail.com>"
@@ -1229,9 +1308,9 @@ rec {
       };
       "syn" = rec {
         crateName = "syn";
-        version = "1.0.14";
+        version = "1.0.18";
         edition = "2018";
-        sha256 = "1xf8g9a3yl41027g5napiwfd7r87y734lf2dqdyyzyfzv183avxg";
+        sha256 = "04wj6qc9bczf1q75qzycx013s1dlgrbbjnddnk7cfa57q24782j1";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -1313,9 +1392,9 @@ rec {
       };
       "threadpool" = rec {
         crateName = "threadpool";
-        version = "1.7.1";
+        version = "1.8.0";
         edition = "2015";
-        sha256 = "0rd89n1q7vy47w4c32cnynibffv9kj3jy3dwr0536n9lbw5ckw72";
+        sha256 = "0rkx0wzaw9v958ckiliwl42m2j7c59j3r5vdj6kda5bw8j2f3np8";
         authors = [
           "The Rust Project Developers"
           "Corey Farwell <coreyf@rwell.org>"
