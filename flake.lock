@@ -1,11 +1,28 @@
 {
-  "inputs": {
+  "nodes": {
+    "brandenburg-pbf": {
+      "flake": false,
+      "info": {
+        "lastModified": 1588024464,
+        "narHash": "sha256-cAipdQtqtcfKnn1EXeNlP4nMC/+BqkyGrZAbLeJBj6w=",
+        "revCount": 1
+      },
+      "locked": {
+        "ref": "master",
+        "rev": "91b714819d3b4cd5e6f2f999a3ddf2c7f0d02e36",
+        "type": "git",
+        "url": "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw"
+      }
+    },
     "nixpkgs": {
       "info": {
         "lastModified": 1584485673,
         "narHash": "sha256-3PQSbnA16MxLQub3M8X/QSE1ggTfHVd/wWpOKutiYvw="
       },
-      "inputs": {},
       "locked": {
         "owner": "NixOS",
         "repo": "nixpkgs",
@@ -16,7 +33,14 @@
         "id": "nixpkgs",
         "type": "indirect"
       }
+    },
+    "root": {
+      "inputs": {
+        "brandenburg-pbf": "brandenburg-pbf",
+        "nixpkgs": "nixpkgs"
+      }
     }
   },
-  "version": 4
+  "root": "root",
+  "version": 5
 }
