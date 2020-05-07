@@ -6,7 +6,7 @@
   inputs = {
     brandenburg-pbf = {
       type = "git";
-      uri = "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw";
+      url = "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw";
       flake = false;
     };
   };
