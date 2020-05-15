@@ -1,5 +1,8 @@
 var mymap = L.map('mapid').setView([52.392, 13.387], 8);
 
+var eu2019 = {};
+var geojson = {};
+
 function highlightFeature(e) {
     var layer = e.target;
 
@@ -79,4 +82,11 @@ loadJSON('boundaries.json',
     function(xhr) { console.error(xhr); }
 );
 
+loadJSON('eu2019.json',
+    function(data) {
+        eu2019 = data;
+    },
+    function(xhr) { console.error(xhr); }
+);
 
+console.error(eu2019);
