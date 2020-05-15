@@ -63,6 +63,7 @@
             } ''
               mkdir -p $out
               cp $src/index.html $out/
+              cp $src/wahlkarte.js $out/
               mkdir -p $out/leaflet@${leaflet.version}/dist
               ln -s ${leaflet.js}  $out/leaflet@${leaflet.version}/dist/leaflet.js
               ln -s ${leaflet.css} $out/leaflet@${leaflet.version}/dist/leaflet.css
