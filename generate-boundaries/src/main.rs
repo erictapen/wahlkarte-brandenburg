@@ -35,6 +35,7 @@ fn import_ags_ids(ags_file: PathBuf) -> HashSet<String> {
     let json_file = File::open(ags_file).unwrap();
     let json_reader = BufReader::new(json_file);
     let json_data: Value = serde_json::from_reader(json_reader).unwrap();
+    // We use AfD here, but any party should give the wanted results
     let id_map: &Map<String, Value> = json_data["AfD"].as_object().unwrap();
 
     let mut result = HashSet::new();
@@ -59,9 +60,12 @@ fn main() {
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    let mut osm_ids: Vec<OsmId> = Vec::new();
+    let mut osm_ids: Vec<(OsmId, String)> = Vec::new();
     let ags_set: HashSet<String> = import_ags_ids(PathBuf::from(args.flag_ags_file));
-    println!("{:?}, len: {}", ags_set, ags_set.len());
+    println!(
+        "{} boundaries will be extracted from the PBF file.",
+        ags_set.len()
+    );
     let mut found_ags: HashSet<String> = HashSet::new();
 
     let raw_file = File::open(args.flag_pbf_file).expect("Couldn't open pbf file.");
@@ -72,7 +76,12 @@ fn main() {
             |obj| match &obj.tags().get("de:amtlicher_gemeindeschluessel") {
                 Some(ags) => {
                     if ags_set.contains(ags.as_str()) {
-                        osm_ids.push(obj.id());
+                        let obj_name: &String = obj.tags().get("name").expect(
+                            format!("Object with AGS {} doesn't have a \"name\" tag.", ags)
+                                .as_str(),
+                        );
+                        println!("Extracting AGS {} {}", ags, obj_name);
+                        osm_ids.push((obj.id(), obj_name.to_string()));
                         found_ags.insert(ags.to_string());
                     }
                     true
@@ -92,7 +101,7 @@ fn main() {
     println!("Building boundaries...");
 
     let mut features: Vec<Feature> = Vec::new();
-    for osm_id in osm_ids {
+    for (osm_id, name) in osm_ids {
         let relation_obj: &OsmObj = objs
             .get(&osm_id)
             .expect(format!("OsmId {:?} was not in objs.", &osm_id).as_str());
@@ -103,11 +112,16 @@ fn main() {
         let multi_polygon = build_boundary(&relation, &objs).unwrap();
 
         let geometry = Geometry::new(geojson::Value::from(&multi_polygon));
+        let properties_map = {
+            let mut m = serde_json::Map::new();
+            m.insert("name".to_string(), serde_json::value::Value::String(name));
+            m
+        };
         let feature = Feature {
             bbox: None,
             geometry: Some(geometry),
             id: None,
-            properties: None,
+            properties: Some(properties_map),
             foreign_members: None,
         };
         features.push(feature);

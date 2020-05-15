@@ -22,11 +22,13 @@
         };
       in
         rec {
+
           generate-boundaries = (
             import ./generate-boundaries/Cargo.nix {
               inherit pkgs;
             }
           ).rootCrate.build;
+
           wahlergebnisse-brandenburg = pkgs.runCommand "wahlergebnisse-brandenburg.json" {
             src = ./wahlergebnisse-brandenburg;
             buildInputs = with pkgs.python3.pkgs; [
@@ -42,6 +44,7 @@
               --ags-file ${wahlergebnisse-brandenburg} \
               --pbf-file ${brandenburg-pbf}/brandenburg-latest.osm.pbf $out
           '';
+
           wahlkarte = let
             leaflet = rec {
               version = "1.6.0";
