@@ -59,7 +59,12 @@
             };
           in
             pkgs.runCommand "wahlkarte" {
-              src = ./.;
+              src = builtins.filterSource
+                (
+                  path: type:
+                    baseNameOf path != "generate-boundaries" && baseNameOf path != "wahlergebnisse-brandenburg"
+                )
+                ./.;
             } ''
               mkdir -p $out
               cp $src/index.html $out/
