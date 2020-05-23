@@ -1,6 +1,5 @@
 var mymap = L.map('mapid').setView([52.392, 13.387], 8);
 
-var eu2019 = {};
 var geojson = {};
 
 function highlightFeature(e) {
@@ -48,11 +47,12 @@ info.onAdd = function (map) {
 info.update = function (props) {
     this._div.innerHTML = '<h4>Name: </h4>' +  (props ?
         '<b>' + props.name + '</b>'
-        : 'Hover over a state');
+        : 'Hover over a state') + '<br>'
+        + '<select class="select-wahl" name="select-wahl">'
+        + '<option value="">Please choose an option</option>'
+        + '<option value="eu2019">Europawahl 2019</option>'
+        + '</select>';
 };
-
-info.addTo(mymap);
-
 
 function loadJSON(path, success, error)
 {
@@ -78,15 +78,31 @@ loadJSON('boundaries.json',
         geojson = L.geoJSON(data, {
             onEachFeature: onEachFeature
         }).addTo(mymap);
+
+        geojson.eachLayer(function(layer) {
+            layer.setStyle({
+                fillColor: '#ff0000'
+            });
+        });
+        info.addTo(mymap);
+        init();
     },
     function(xhr) { console.error(xhr); }
 );
 
-loadJSON('eu2019.json',
-    function(data) {
-        eu2019 = data;
-    },
-    function(xhr) { console.error(xhr); }
-);
-
-console.error(eu2019);
+function init() {
+    console.log('initializing...');
+    const selectWahl = document.querySelector('.select-wahl');
+    selectWahl.addEventListener('change', (event) => {
+        if (!event.target.value) {
+            return;
+        }
+        console.log('start loading');
+        loadJSON(event.target.value + '.json',
+            function(data) {
+                console.log(event.target.value + ' loaded');
+            },
+            function(xhr) { console.error(xhr); }
+        );
+    });
+}
