@@ -98,7 +98,7 @@ function init() {
             return;
         }
         console.log('start loading');
-        loadJSON(event.target.value + '.json',
+        loadJSON('elections/' + event.target.value + '.json',
             function(data) {
                 console.log(event.target.value + ' loaded');
             },

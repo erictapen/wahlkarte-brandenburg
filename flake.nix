@@ -73,7 +73,8 @@
               ln -s ${leaflet.js}  $out/leaflet@${leaflet.version}/dist/leaflet.js
               ln -s ${leaflet.css} $out/leaflet@${leaflet.version}/dist/leaflet.css
               cp ${boundaries} $out/boundaries.json
-              cp ${wahlergebnisse-brandenburg} $out/eu2019.json
+              mkdir -p $out/elections
+              cp ${wahlergebnisse-brandenburg} $out/elections/eu2019.json
             '';
 
           deploy = pkgs.writeScript "deploy-wahlkarte" ''
