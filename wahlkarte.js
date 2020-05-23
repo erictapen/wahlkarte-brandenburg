@@ -54,7 +54,7 @@ info.update = function (props) {
   } else if (!props) {
     this._div.innerHTML = 'Bewege den Cursor über ein Gebiet.'
   } else {
-    absolute_votes = electionData['_absolut'][props.ags]
+    absolute_votes = electionData['_absolute'][props.ags]
     relative_votes = electionData[party][props.ags] / absolute_votes
     this._div.innerHTML = '<h4>Name: <b>' + props.name + '</b></h4>' +
       '<h4>Stimmen ' + party + ': <b>' + (relative_votes * 100).toFixed(2) +
@@ -142,9 +142,8 @@ function init() {
       ags = layer.feature.properties.ags
       fraction = Math.floor(
         (colors.length - 1) *
-          (electionData[party][ags] /
-            // Compress color space. Let's assume no party gets more than 50% of the votes
-            (electionData['_absolut'][ags] / 2.0)),
+          ((electionData[party][ags] / electionData['_absolute'][ags]) /
+            electionData[party]['_highest_ratio']),
       )
       layer.setStyle({
         fillColor: colors[fraction],
