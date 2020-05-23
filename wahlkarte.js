@@ -47,11 +47,7 @@ info.onAdd = function (map) {
 info.update = function (props) {
     this._div.innerHTML = '<h4>Name: </h4>' +  (props ?
         '<b>' + props.name + '</b>'
-        : 'Hover over a state') + '<br>'
-        + '<select class="select-wahl" name="select-wahl">'
-        + '<option value="">Please choose an option</option>'
-        + '<option value="eu2019">Europawahl 2019</option>'
-        + '</select>';
+        : 'Hover over a state') + '<br>';
 };
 
 function loadJSON(path, success, error)
