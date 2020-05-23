@@ -1,6 +1,8 @@
 var mymap = L.map('mapid').setView([52.392, 13.387], 8)
 
 var geojson = {}
+var electionData
+var party
 
 function highlightFeature(e) {
   var layer = e.target
@@ -45,8 +47,20 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
-  this._div.innerHTML = '<h4>Name: </h4>' +
-    (props ? '<b>' + props.name + '</b>' : 'Hover over a state') + '<br>'
+  if (typeof electionData == 'undefined') {
+    this._div.innerHTML = 'Wähle eine Wahl aus.'
+  } else if (typeof 'party' == 'undefined') {
+    this._div.innerHTML = 'Wähle eine Partei aus.'
+  } else if (!props) {
+    this._div.innerHTML = 'Bewege den Cursor über ein Gebiet.'
+  } else {
+    absolute_votes = electionData['_absolut'][props.ags]
+    relative_votes = electionData[party][props.ags] / absolute_votes
+    this._div.innerHTML = '<h4>Name: <b>' + props.name + '</b></h4>' +
+      '<h4>Stimmen ' + party + ': <b>' + (relative_votes * 100).toFixed(2) +
+      '%</b></h4>' +
+      '<h4>Gültige Stimmen insgesamt: <b>' + absolute_votes + '</b></h4>'
+  }
 }
 
 function loadJSON(path, success, error) {
@@ -116,6 +130,7 @@ function init() {
     }, function (xhr) {
       console.error(xhr)
     })
+    info.update()
   })
   document.querySelector('.select-partei').addEventListener('change', event => {
     if (!event.target.value) {
@@ -127,7 +142,9 @@ function init() {
       ags = layer.feature.properties.ags
       fraction = Math.floor(
         (colors.length - 1) *
-          (electionData[party][ags] / electionData['_absolut'][ags]),
+          (electionData[party][ags] /
+            // Compress color space. Let's assume no party gets more than 50% of the votes
+            (electionData['_absolut'][ags] / 2.0)),
       )
       layer.setStyle({
         fillColor: colors[fraction],
@@ -135,5 +152,6 @@ function init() {
         weight: 0.8,
       })
     })
+    info.update()
   })
 }

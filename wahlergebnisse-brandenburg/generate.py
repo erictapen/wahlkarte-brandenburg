@@ -55,7 +55,8 @@ for party in parties:
 for line in range(2, 3813):
     print(str(line) + ": " + str(worksheet["F" + str(line)].value))
     lk_nr = worksheet[keys["Landkreisnummer"] + str(line)].value
-    ags = worksheet[keys["AGS"] + str(line)].value
+    # The AGS has sometimes two extra digits. We don't want them yet.
+    ags = worksheet[keys["AGS"] + str(line)].value[:8]
     absolute_votes = worksheet[keys["Gültige Stimmen"] + str(line)].value
     # accumulate the valid votes for both the Landkreis and the Gemeinde
     result["_absolut"][lk_nr] += absolute_votes
