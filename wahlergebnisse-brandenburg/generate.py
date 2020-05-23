@@ -48,6 +48,7 @@ while True:
 print("Es gibt " + str(len(parties)) + " Parteien.")
 
 result = dict()
+result["_absolut"] = defaultdict(int)
 for party in parties:
     result[party] = defaultdict(int)
 
@@ -55,18 +56,15 @@ for line in range(2, 3813):
     print(str(line) + ": " + str(worksheet["F" + str(line)].value))
     lk_nr = worksheet[keys["Landkreisnummer"] + str(line)].value
     ags = worksheet[keys["AGS"] + str(line)].value
+    absolute_votes = worksheet[keys["Gültige Stimmen"] + str(line)].value
+    # accumulate the valid votes for both the Landkreis and the Gemeinde
+    result["_absolut"][lk_nr] += absolute_votes
+    result["_absolut"][ags] += absolute_votes
     # print("lk: " + lk_nr + ", ags: " + ags)
     for (party, party_key) in parties.items():
+        # accumulate both Landkreis wide and Gemeinde wide amounts of votes for the party
         result[party][lk_nr] += worksheet[party_key + str(line)].value
         result[party][ags] += worksheet[party_key + str(line)].value
-        # partydict = {
-        #     party: {
-        #         lk_nr: {
-        #             ags: worksheet[party_key + str(line)].value
-        #         }
-        #     }
-        # }
-        # result.update(partydict)
 
 with open(sys.argv[2], "w", encoding="utf-8") as out_file:
     json.dump(result, out_file, ensure_ascii=False, indent=4)

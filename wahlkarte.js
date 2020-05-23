@@ -124,9 +124,10 @@ function init() {
     console.log('Show party data of ' + event.target.value)
     party = event.target.value
     geojson.eachLayer(function (layer) {
+      ags = layer.feature.properties.ags
       fraction = Math.floor(
         (colors.length - 1) *
-          (electionData[party][layer.feature.properties.ags] / 1000),
+          (electionData[party][ags] / electionData['_absolut'][ags]),
       )
       layer.setStyle({
         fillColor: colors[fraction],
