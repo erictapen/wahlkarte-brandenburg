@@ -60,7 +60,7 @@ fn main() {
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    let mut osm_ids: Vec<(OsmId, String)> = Vec::new();
+    let mut osm_ids: Vec<(OsmId, String, String)> = Vec::new();
     let ags_set: HashSet<String> = import_ags_ids(PathBuf::from(args.flag_ags_file));
     println!(
         "{} boundaries will be extracted from the PBF file.",
@@ -74,6 +74,7 @@ fn main() {
     let objs = pbf_reader
         .get_objs_and_deps(
             |obj| match &obj.tags().get("de:amtlicher_gemeindeschluessel") {
+                None => false,
                 Some(ags) => {
                     if ags_set.contains(ags.as_str()) {
                         let obj_name: &String = obj.tags().get("name").expect(
@@ -81,12 +82,11 @@ fn main() {
                                 .as_str(),
                         );
                         println!("Extracting AGS {} {}", ags, obj_name);
-                        osm_ids.push((obj.id(), obj_name.to_string()));
+                        osm_ids.push((obj.id(), ags.to_string(), obj_name.to_string()));
                         found_ags.insert(ags.to_string());
                     }
                     true
                 }
-                None => false,
             },
         )
         .expect("Failed to decode pbf file.");
@@ -101,7 +101,7 @@ fn main() {
     println!("Building boundaries...");
 
     let mut features: Vec<Feature> = Vec::new();
-    for (osm_id, name) in osm_ids {
+    for (osm_id, ags, name) in osm_ids {
         let relation_obj: &OsmObj = objs
             .get(&osm_id)
             .expect(format!("OsmId {:?} was not in objs.", &osm_id).as_str());
@@ -115,6 +115,7 @@ fn main() {
         let properties_map = {
             let mut m = serde_json::Map::new();
             m.insert("name".to_string(), serde_json::value::Value::String(name));
+            m.insert("ags".to_string(), serde_json::value::Value::String(ags));
             m
         };
         let feature = Feature {
