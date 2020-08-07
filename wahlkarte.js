@@ -127,10 +127,10 @@ function init() {
     loadJSON('elections/' + event.target.value + '.json', function (data) {
       console.log(event.target.value + ' loaded')
       electionData = data
+      info.update()
     }, function (xhr) {
       console.error(xhr)
     })
-    info.update()
   })
   document.querySelector('.select-partei').addEventListener('change', event => {
     if (!event.target.value) {
