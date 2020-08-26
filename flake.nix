@@ -2,6 +2,7 @@
   description = "Wahlkarte Brandenburg";
 
   inputs = {
+    nixpkgs.url = "github:NixOS/Nixpkgs/nixos-unstable";
     brandenburg-pbf = {
       type = "git";
       url = "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw";

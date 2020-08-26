@@ -2,14 +2,12 @@
   "nodes": {
     "brandenburg-pbf": {
       "flake": false,
-      "info": {
+      "locked": {
         "lastModified": 1588024464,
         "narHash": "sha256-cAipdQtqtcfKnn1EXeNlP4nMC/+BqkyGrZAbLeJBj6w=",
-        "revCount": 1
-      },
-      "locked": {
         "ref": "master",
         "rev": "91b714819d3b4cd5e6f2f999a3ddf2c7f0d02e36",
+        "revCount": 1,
         "type": "git",
         "url": "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw"
       },
@@ -19,20 +17,19 @@
       }
     },
     "nixpkgs": {
-      "info": {
-        "lastModified": 1590171379,
-        "narHash": "sha256-PLQrzloUrkf8o4+x5y9NnGeILz0/MLL9SSWJLX/M/Bc=",
-        "revCount": 214855
-      },
       "locked": {
-        "ref": "custom-20.03",
-        "rev": "2b8cd6e6c8e7e840f8694d2ea0feb851bf4d75c0",
-        "type": "git",
-        "url": "file:///home/justin/nixpkgs"
+        "lastModified": 1597943282,
+        "narHash": "sha256-G/VQBlqO7YeFOSvn29RqdvABZxmQBtiRYVA6kjqWZ6o=",
+        "owner": "NixOS",
+        "repo": "Nixpkgs",
+        "rev": "c59ea8b8a0e7f927e7291c14ea6cd1bd3a16ff38",
+        "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "Nixpkgs",
+        "type": "github"
       }
     },
     "root": {
@@ -43,5 +40,5 @@
     }
   },
   "root": "root",
-  "version": 5
+  "version": 7
 }
