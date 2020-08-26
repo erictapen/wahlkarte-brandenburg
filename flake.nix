@@ -28,19 +28,20 @@
             }
           ).rootCrate.build;
 
-          wahlergebnisse-brandenburg = pkgs.runCommand "wahlergebnisse-brandenburg.json" {
+          wahlergebnisse-brandenburg = pkgs.runCommand "wahlergebnisse-brandenburg" {
             src = ./wahlergebnisse-brandenburg;
             buildInputs = with pkgs.python3.pkgs; [
               openpyxl
             ];
           } ''
-            python3 $src/generate.py $src/raw/DL_BB_EU2019.xlsx $out
+            mkdir -p $out
+            python3 $src/generate.py $src/raw/ $out/
           '';
           boundaries = pkgs.runCommand "boundaries.json" {
             buildInputs = [ generate-boundaries ];
           } ''
             generate-boundaries \
-              --ags-file ${wahlergebnisse-brandenburg} \
+              --ags-file ${wahlergebnisse-brandenburg}/eu2019.json \
               --pbf-file ${brandenburg-pbf}/brandenburg-latest.osm.pbf $out
           '';
 
@@ -71,9 +72,8 @@
               mkdir -p $out/leaflet@${leaflet.version}/dist
               ln -s ${leaflet.js}  $out/leaflet@${leaflet.version}/dist/leaflet.js
               ln -s ${leaflet.css} $out/leaflet@${leaflet.version}/dist/leaflet.css
-              cp ${boundaries} $out/boundaries.json
-              mkdir -p $out/elections
-              cp ${wahlergebnisse-brandenburg} $out/elections/eu2019.json
+              ln -s ${boundaries} $out/boundaries.json
+              ln -s ${wahlergebnisse-brandenburg} $out/elections
             '';
 
           deploy = pkgs.writeScript "deploy-wahlkarte" ''
