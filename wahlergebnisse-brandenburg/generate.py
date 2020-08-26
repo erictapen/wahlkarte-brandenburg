@@ -6,35 +6,34 @@ from collections import defaultdict
 import json
 import sys
 
-keys = {
-  "AGS": "B",
-  "Landkreisnummer": "C",
-  "Amtsnummer": "D",
-  "Gemeindenummer": "E",
-  "Gemeindename": "F",
-  "Wahlbezirk": "G",
-  "Wahlbezirksart": "H",
-  "Wahlberechtigte insgesamt": "L",
-  "Wähler": "P",
-  "Gültige Stimmen": "S",
-}
-
 def excel_column_name(n):
     """Number to Excel-style column name, e.g., 1 = A, 26 = Z, 27 = AA, 703 = AAA."""
-    name = ''
+    name = ""
     while n > 0:
         n, r = divmod (n - 1, 26)
         name = chr(r + ord('A')) + name
     return name
 
-def generate_election_results(config):
-    workbook = load_workbook(filename = sys.argv[1] + config["rawfile"])
+def generate_election_results(*,
+        rawfile,
+        outfile,
+        sheetname="Ergebnis",
+        first_party_index,
+        start_row=2,
+        end_row,
+        keys={
+            "Landkreisnummer": "C",
+            "AGS": "B",
+            "Gültige Stimmen": "S"
+        }
+            ):
+    workbook = load_workbook(filename = sys.argv[1] + rawfile)
 
-    worksheet = workbook["Brandenburg_Europawahl_W"]
+    worksheet = workbook[sheetname]
 
     # determine all available parties
     parties = {}
-    rowi = 20 # "T" in excel rows
+    rowi = first_party_index
     while True:
         cell_value = worksheet[excel_column_name(rowi) + "1"].value
         if cell_value is not None:
@@ -43,7 +42,7 @@ def generate_election_results(config):
         else:
             break
 
-    print("Es gibt " + str(len(parties)) + " Parteien.")
+    print("Es gibt " + str(len(parties)) + " Parteien in " + rawfile + ".")
 
     # prepare overall structure of result dict
     result = dict()
@@ -52,11 +51,15 @@ def generate_election_results(config):
         result[party] = defaultdict(int)
 
     # Iterate for every wahlbezirk for every party and aggregate results
-    for line in range(config["start_row"], config["end_row"]):
+    for line in range(start_row, end_row + 1):
         print(str(line) + ": " + str(worksheet["F" + str(line)].value))
         lk_nr = worksheet[keys["Landkreisnummer"] + str(line)].value
-        # The AGS has sometimes two extra digits. We don't want them yet.
-        ags = worksheet[keys["AGS"] + str(line)].value[:8]
+        try:
+            # The AGS has sometimes two extra digits. We don't want them yet.
+            ags = worksheet[keys["AGS"] + str(line)].value[:8]
+        except:
+            TypeError
+            ags = str(worksheet[keys["AGS"] + str(line)].value)
         absolute_votes = worksheet[keys["Gültige Stimmen"] + str(line)].value
         # accumulate the valid votes for both the Landkreis and the Gemeinde
         result["_absolute"][lk_nr] += absolute_votes
@@ -75,13 +78,31 @@ def generate_election_results(config):
             highest_ratio = max(highest_ratio, votes / result['_absolute'][ags])
         result[party]["_highest_ratio"] = highest_ratio
 
-    with open(sys.argv[2] + config["outfile"], "w", encoding="utf-8") as out_file:
+    with open(sys.argv[2] + outfile, "w", encoding="utf-8") as out_file:
         json.dump(result, out_file, ensure_ascii=False, indent=4)
 
-generate_election_results( {
-    "rawfile": "DL_BB_EU2019.xlsx",
-    "outfile": "eu2019.json",
-    "start_row": 2,
-    "end_row": 3813
-    } )
+generate_election_results(
+    rawfile="DL_BB_EU2019.xlsx",
+    outfile = "eu2019.json",
+    sheetname = "Brandenburg_Europawahl_W",
+    first_party_index = 20, # T
+    end_row = 3812,
+    keys = {
+        "Landkreisnummer": "C",
+        "AGS": "B",
+        "Gültige Stimmen": "S"
+        }
+    )
 
+generate_election_results(
+    rawfile = "DL_BB_EU2014.xlsx",
+    outfile = "eu2014.json",
+    sheetname = "Ergebnis",
+    first_party_index = 18, # R
+    end_row = 3679,
+    keys = {
+        "Landkreisnummer": "C",
+        "AGS": "B",
+        "Gültige Stimmen": "Q"
+        }
+    )
