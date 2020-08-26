@@ -90,6 +90,8 @@
         pkgs.mkShell {
           buildInputs = with pkgs; [
             darkhttpd
+            cargo
+            rustc
           ];
         };
     };

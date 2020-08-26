@@ -11,8 +11,8 @@ topojson = "*"
 osm_boundaries_utils = "*"
 osmpbfreader = "*"
 geo = "*"
-geojson = { version = "0.16.0", features = ["geo-types"] }
-geo-types = "0.4.3"
+geojson = { version = "*", features = ["geo-types"] }
+geo-types = "*"
 serde_json = "*"
 regex = "*"
 docopt = "*"

@@ -384,11 +384,11 @@ rec {
           }
           {
             name = "geo-types";
-            packageId = "geo-types 0.4.3";
+            packageId = "geo-types";
           }
           {
             name = "geojson";
-            packageId = "geojson";
+            packageId = "geojson 0.19.0";
             features = [ "geo-types" ];
           }
           {
@@ -467,7 +467,7 @@ rec {
         dependencies = [
           {
             name = "geo-types";
-            packageId = "geo-types 0.6.0";
+            packageId = "geo-types";
             features = [ "rstar" ];
           }
           {
@@ -489,23 +489,7 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" ];
       };
-      "geo-types 0.4.3" = rec {
-        crateName = "geo-types";
-        version = "0.4.3";
-        edition = "2018";
-        sha256 = "0zm0hbnx17kvdb5kf2kyzqahaay3z8dslpd2m1gb0612pmnqyvl6";
-        authors = [
-          "Corey Farwell <coreyf@rwell.org>"
-        ];
-        dependencies = [
-          {
-            name = "num-traits";
-            packageId = "num-traits";
-          }
-        ];
-        
-      };
-      "geo-types 0.6.0" = rec {
+      "geo-types" = rec {
         crateName = "geo-types";
         version = "0.6.0";
         edition = "2018";
@@ -555,7 +539,7 @@ rec {
         ];
         
       };
-      "geojson" = rec {
+      "geojson 0.16.0" = rec {
         crateName = "geojson";
         version = "0.16.0";
         edition = "2018";
@@ -566,8 +550,33 @@ rec {
         ];
         dependencies = [
           {
+            name = "num-traits";
+            packageId = "num-traits";
+          }
+          {
+            name = "serde";
+            packageId = "serde";
+          }
+          {
+            name = "serde_json";
+            packageId = "serde_json";
+          }
+        ];
+        
+      };
+      "geojson 0.19.0" = rec {
+        crateName = "geojson";
+        version = "0.19.0";
+        edition = "2018";
+        sha256 = "1ayj3znwzwkzrg0dmz4ykqwzmw7vdhb7hz4myd3dz61jr9mni66s";
+        authors = [
+          "Corey Farwell <coreyf@rwell.org>"
+          "Blake Grotewold <hello@grotewold.me>"
+        ];
+        dependencies = [
+          {
             name = "geo-types";
-            packageId = "geo-types 0.4.3";
+            packageId = "geo-types";
             optional = true;
           }
           {
@@ -806,7 +815,7 @@ rec {
           }
           {
             name = "geo-types";
-            packageId = "geo-types 0.6.0";
+            packageId = "geo-types";
           }
           {
             name = "log";
@@ -1394,7 +1403,7 @@ rec {
         dependencies = [
           {
             name = "geojson";
-            packageId = "geojson";
+            packageId = "geojson 0.16.0";
           }
           {
             name = "log";

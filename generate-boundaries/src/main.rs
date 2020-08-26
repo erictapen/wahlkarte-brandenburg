@@ -77,7 +77,7 @@ fn main() {
                 None => false,
                 Some(ags) => {
                     if ags_set.contains(ags.as_str()) {
-                        let obj_name: &String = obj.tags().get("name").expect(
+                        let obj_name = obj.tags().get("name").expect(
                             format!("Object with AGS {} doesn't have a \"name\" tag.", ags)
                                 .as_str(),
                         );

@@ -105,8 +105,8 @@ version = "0.1.0"
 dependencies = [
  "docopt 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "geo 0.14.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "geo-types 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "geojson 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "geo-types 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "geojson 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "osm_boundaries_utils 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "osmpbfreader 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 1.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -144,14 +144,6 @@ dependencies = [
 
 [[package]]
 name = "geo-types"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "num-traits 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "geo-types"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
@@ -173,7 +165,17 @@ name = "geojson"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "geo-types 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num-traits 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.115 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 1.0.57 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "geojson"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "geo-types 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num-traits 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.115 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.57 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -511,10 +513,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum generic-array 0.12.3 (registry+https://github.com/rust-lang/crates.io-index)" = "c68f0274ae0e023facc3c97b2e00f076be70e254bc851d972503b328db79b2ec"
 "checksum generic-array 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)" = "0ed1e761351b56f54eb9dcd0cfaca9fd0daecf93918e1cfc01c8a3d26ee7adcd"
 "checksum geo 0.14.2 (registry+https://github.com/rust-lang/crates.io-index)" = "139007e3210dfc1d010e166e779059be5e0f31967a71f3edae97116aefb74450"
-"checksum geo-types 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "866e8f6dbd2218b05ea8a25daa1bfac32b0515fe7e0a37cb6a7b9ed0ed82a07e"
 "checksum geo-types 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "407043938de169e80c31cef3c46c99faccd4d002ea8120c637f29a6958820c62"
 "checksum geographiclib-rs 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b78e20d5d868fa2c4182a8170cb4df261e781a605810e3c1500269c1907da461"
 "checksum geojson 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)" = "22b37e57c7f498be81360116a489ebad0b133557e87d8b4f82d51bebd1c3ef9e"
+"checksum geojson 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)" = "da98686bca3298df46f3957c78166cfbf0fa399e9efcdac0cb7ff2cfed1fd2ab"
 "checksum hash32 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d4041af86e63ac4298ce40e5cca669066e75b6f1aa3390fe2561ffa5e1d9f4cc"
 "checksum heapless 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)" = "73a8a2391a3bc70b31f60e7a90daa5755a360559c0b6b9c5cfc0fee482362dc0"
 "checksum hermit-abi 0.1.15 (registry+https://github.com/rust-lang/crates.io-index)" = "3deed196b6e7f9e44a2ae8d94225d80302d81208b1bb673fd21fe634645c85a9"
