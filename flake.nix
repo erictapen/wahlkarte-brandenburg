@@ -81,6 +81,17 @@
             ${pkgs.openssh}/bin/scp -r ${wahlkarte}/* mmz.erictapen.name:/webroot/mmz.erictapen.name/
           '';
         };
+
+      devShell.x86_64-linux = let
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+        };
+      in
+        pkgs.mkShell {
+          buildInputs = with pkgs; [
+            darkhttpd
+          ];
+        };
     };
 
 }
