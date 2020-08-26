@@ -57,6 +57,14 @@ rec {
     };
   };
 
+  # A derivation that joins the outputs of all workspace members together.
+  allWorkspaceMembers = pkgs.symlinkJoin {
+      name = "all-workspace-members";
+      paths =
+        let members = builtins.attrValues workspaceMembers;
+        in builtins.map (m: m.build) members;
+  };
+
   #
   # "internal" ("private") attributes that may change in every new version of crate2nix.
   #
@@ -73,21 +81,24 @@ rec {
     #   inject test dependencies into the build
 
     crates = {
-      "adler32" = rec {
-        crateName = "adler32";
-        version = "1.0.4";
+      "adler" = rec {
+        crateName = "adler";
+        version = "0.2.3";
         edition = "2015";
-        sha256 = "1hnan4fgmnidgn2k84hh2i67c3wp2c5iwd5hs61yi7gwwx1p6bjx";
+        sha256 = "0zpdsrfq5bd34941gmrlamnzjfbsx0x586afb7b0jqhr8g1lwapf";
         authors = [
-          "Remi Rampin <remirampin@gmail.com>"
+          "Jonas Schievink <jonasschievink@gmail.com>"
         ];
-        
+        features = {
+          "default" = [ "std" ];
+          "rustc-dep-of-std" = [ "core" "compiler_builtins" ];
+        };
       };
       "aho-corasick" = rec {
         crateName = "aho-corasick";
-        version = "0.7.10";
+        version = "0.7.13";
         edition = "2015";
-        sha256 = "1nka9509afjgal6lpymn8w2lq11dmjwxs8yjcmzys966if5l05l7";
+        sha256 = "11hfmqf90rdvjdpk0x1lixw1s9n08y3fxfy9zqsk0k2wpbc68c84";
         libName = "aho_corasick";
         authors = [
           "Andrew Gallant <jamslam@gmail.com>"
@@ -105,82 +116,61 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "std" ];
       };
+      "approx" = rec {
+        crateName = "approx";
+        version = "0.3.2";
+        edition = "2015";
+        sha256 = "1hx580xjdxl3766js9b49rnbnmr8gw8c060809l43k9f0xshprph";
+        authors = [
+          "Brendan Zabarauskas <bjzaba@yahoo.com.au>"
+        ];
+        dependencies = [
+          {
+            name = "num-traits";
+            packageId = "num-traits";
+            usesDefaultFeatures = false;
+          }
+        ];
+        features = {
+          "default" = [ "std" ];
+        };
+        resolvedDefaultFeatures = [ "default" "std" ];
+      };
+      "as-slice" = rec {
+        crateName = "as-slice";
+        version = "0.1.3";
+        edition = "2015";
+        sha256 = "0w0f56lnd9l6369jh6iv1qb08zl1lqa4y017x1gcharvq1dvdprp";
+        authors = [
+          "Jorge Aparicio <jorge@japaric.io>"
+        ];
+        dependencies = [
+          {
+            name = "generic-array";
+            packageId = "generic-array 0.12.3";
+          }
+          {
+            name = "generic-array";
+            packageId = "generic-array 0.13.2";
+            rename = "ga13";
+          }
+          {
+            name = "stable_deref_trait";
+            packageId = "stable_deref_trait";
+            usesDefaultFeatures = false;
+          }
+        ];
+        
+      };
       "autocfg" = rec {
         crateName = "autocfg";
-        version = "1.0.0";
+        version = "1.0.1";
         edition = "2015";
-        sha256 = "17cv6pwb4q08s0ynpr4n8hv5299hcmhdgvdchzixfpw8y5qcgapq";
+        sha256 = "0jj6i9zn4gjl03kjvziqdji6rwx8ykz8zk2ngpc331z2g3fk3c6d";
         authors = [
           "Josh Stone <cuviper@gmail.com>"
         ];
         
-      };
-      "backtrace" = rec {
-        crateName = "backtrace";
-        version = "0.3.46";
-        edition = "2018";
-        sha256 = "17hh1vrhfd01qpjilrdpy7q0lf2j2qv36achpg37q92rff4r5rmi";
-        authors = [
-          "The Rust Project Developers"
-        ];
-        dependencies = [
-          {
-            name = "backtrace-sys";
-            packageId = "backtrace-sys";
-            optional = true;
-            usesDefaultFeatures = false;
-          }
-          {
-            name = "cfg-if";
-            packageId = "cfg-if";
-          }
-          {
-            name = "libc";
-            packageId = "libc";
-            usesDefaultFeatures = false;
-          }
-          {
-            name = "rustc-demangle";
-            packageId = "rustc-demangle";
-          }
-        ];
-        features = {
-          "default" = [ "std" "libunwind" "libbacktrace" "dladdr" "dbghelp" ];
-          "gimli-symbolize" = [ "addr2line" "findshlibs" "memmap" "goblin" ];
-          "libbacktrace" = [ "backtrace-sys/backtrace-sys" ];
-          "rustc-dep-of-std" = [ "backtrace-sys/rustc-dep-of-std" "cfg-if/rustc-dep-of-std" "core" "compiler_builtins" "libc/rustc-dep-of-std" "rustc-demangle/rustc-dep-of-std" ];
-          "serialize-rustc" = [ "rustc-serialize" ];
-          "serialize-serde" = [ "serde" ];
-          "verify-winapi" = [ "winapi/dbghelp" "winapi/handleapi" "winapi/libloaderapi" "winapi/minwindef" "winapi/processthreadsapi" "winapi/synchapi" "winapi/winbase" "winapi/winnt" ];
-        };
-        resolvedDefaultFeatures = [ "backtrace-sys" "dbghelp" "default" "dladdr" "libbacktrace" "libunwind" "std" ];
-      };
-      "backtrace-sys" = rec {
-        crateName = "backtrace-sys";
-        version = "0.1.36";
-        edition = "2015";
-        sha256 = "1iqvmqsnnk1n55l1rl9d6v8fghngvsfas28kbm4a4m8jxqc8g13q";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
-        dependencies = [
-          {
-            name = "libc";
-            packageId = "libc";
-            usesDefaultFeatures = false;
-          }
-        ];
-        buildDependencies = [
-          {
-            name = "cc";
-            packageId = "cc";
-          }
-        ];
-        features = {
-          "default" = [ "backtrace-sys" ];
-          "rustc-dep-of-std" = [ "core" "compiler_builtins" ];
-        };
-        resolvedDefaultFeatures = [ "backtrace-sys" ];
       };
       "byteorder" = rec {
         crateName = "byteorder";
@@ -194,19 +184,6 @@ rec {
           "default" = [ "std" ];
         };
         resolvedDefaultFeatures = [ "default" "std" ];
-      };
-      "cc" = rec {
-        crateName = "cc";
-        version = "1.0.52";
-        edition = "2018";
-        crateBin = [];
-        sha256 = "07g3qpa0gab3b0niw5ljzak6lgq34zjsv98hylxd0b59sqippn63";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
-        features = {
-          "parallel" = [ "jobserver" ];
-        };
       };
       "cfg-if" = rec {
         crateName = "cfg-if";
@@ -270,63 +247,6 @@ rec {
         ];
         
       };
-      "failure" = rec {
-        crateName = "failure";
-        version = "0.1.7";
-        edition = "2015";
-        sha256 = "0js6i6mb42q1g6q3csfbmi6q40s64k96705xbim0d8zg44j9qlmq";
-        authors = [
-          "Without Boats <boats@mozilla.com>"
-        ];
-        dependencies = [
-          {
-            name = "backtrace";
-            packageId = "backtrace";
-            optional = true;
-          }
-          {
-            name = "failure_derive";
-            packageId = "failure_derive";
-            optional = true;
-          }
-        ];
-        features = {
-          "default" = [ "std" "derive" ];
-          "derive" = [ "failure_derive" ];
-          "std" = [ "backtrace" ];
-        };
-        resolvedDefaultFeatures = [ "backtrace" "default" "derive" "failure_derive" "std" ];
-      };
-      "failure_derive" = rec {
-        crateName = "failure_derive";
-        version = "0.1.7";
-        edition = "2015";
-        sha256 = "0cfjz0c9szqpxn43b2r722p6m3swzxj7aj6xhqw23ml7h8y762h3";
-        procMacro = true;
-        authors = [
-          "Without Boats <woboats@gmail.com>"
-        ];
-        dependencies = [
-          {
-            name = "proc-macro2";
-            packageId = "proc-macro2";
-          }
-          {
-            name = "quote";
-            packageId = "quote";
-          }
-          {
-            name = "syn";
-            packageId = "syn";
-          }
-          {
-            name = "synstructure";
-            packageId = "synstructure";
-          }
-        ];
-        features = {
-        };
-      };
       "flat_map" = rec {
         crateName = "flat_map";
         version = "0.0.9";
@@ -361,9 +281,9 @@ rec {
       };
       "flate2" = rec {
         crateName = "flate2";
-        version = "1.0.14";
+        version = "1.0.17";
         edition = "2018";
-        sha256 = "0hlb2zmn5ixrgr0i1qvrd3a7j4fpp002d0kddn2hm7hjj49z9zrc";
+        sha256 = "153dqkrya111fl4n64nhdjagswasq6wg6gx9silj2l61l9vhwvbn";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
         ];
@@ -384,10 +304,12 @@ rec {
             name = "miniz_oxide";
             packageId = "miniz_oxide";
             optional = true;
+            usesDefaultFeatures = false;
           }
           {
             name = "miniz_oxide";
             packageId = "miniz_oxide";
+            usesDefaultFeatures = false;
             target = { target, features }: ((target."arch" == "wasm32") && (!(target."os" == "emscripten")));
           }
         ];
@@ -397,6 +319,7 @@ rec {
           "rust_backend" = [ "miniz_oxide" ];
           "tokio" = [ "tokio-io" "futures" ];
           "zlib" = [ "any_zlib" "libz-sys" ];
+          "zlib-ng-compat" = [ "zlib" "libz-sys/zlib-ng" ];
         };
         resolvedDefaultFeatures = [ "default" "miniz_oxide" "rust_backend" ];
       };
@@ -457,7 +380,7 @@ rec {
           }
           {
             name = "geo";
-            packageId = "geo 0.13.0";
+            packageId = "geo";
           }
           {
             name = "geo-types";
@@ -496,53 +419,60 @@ rec {
         ];
         
       };
-      "geo 0.12.2" = rec {
-        crateName = "geo";
-        version = "0.12.2";
-        edition = "2018";
-        sha256 = "1c2hd3lpvhrf6cc49sq86j27ldv6glj9balgm67cxxd64nm8zkl9";
+      "generic-array 0.12.3" = rec {
+        crateName = "generic-array";
+        version = "0.12.3";
+        edition = "2015";
+        sha256 = "1v5jg7djicq34nbiv1dwaki71gkny002wyy9qfn3y0hfmrs053y6";
+        libName = "generic_array";
         authors = [
-          "Corey Farwell <coreyf@rwell.org>"
+          "Bartłomiej Kamiński <fizyk20@gmail.com>"
+          "Aaron Trent <novacrazy@gmail.com>"
         ];
         dependencies = [
           {
-            name = "failure";
-            packageId = "failure";
-          }
-          {
-            name = "geo-types";
-            packageId = "geo-types 0.4.3";
-            features = [ "rstar" ];
-          }
-          {
-            name = "num-traits";
-            packageId = "num-traits";
-          }
-          {
-            name = "rstar";
-            packageId = "rstar 0.2.0";
+            name = "typenum";
+            packageId = "typenum";
           }
         ];
-        features = {
-          "postgis-integration" = [ "postgis" ];
-          "use-proj" = [ "proj" ];
-          "use-serde" = [ "serde" "geo-types/serde" ];
-        };
-        resolvedDefaultFeatures = [ "default" ];
+        
       };
-      "geo 0.13.0" = rec {
+      "generic-array 0.13.2" = rec {
+        crateName = "generic-array";
+        version = "0.13.2";
+        edition = "2015";
+        sha256 = "1kddwxpd58y807y1r3lijg7sw3gxm6nczl6wp57gamhv6mhygl8f";
+        libName = "generic_array";
+        authors = [
+          "Bartłomiej Kamiński <fizyk20@gmail.com>"
+          "Aaron Trent <novacrazy@gmail.com>"
+        ];
+        dependencies = [
+          {
+            name = "typenum";
+            packageId = "typenum";
+          }
+        ];
+        features = {
+        };
+      };
+      "geo" = rec {
         crateName = "geo";
-        version = "0.13.0";
+        version = "0.14.2";
         edition = "2018";
-        sha256 = "0kfz0idrb56n3ld2y8pwvmggd542zw7hh3vyjv4jzr12afwg65b3";
+        sha256 = "0l24nzpnl4cpmvnz6wbsjqqhypmyb687fvhn1q0ivz0d47ihg40k";
         authors = [
           "Corey Farwell <coreyf@rwell.org>"
         ];
         dependencies = [
           {
             name = "geo-types";
-            packageId = "geo-types 0.5.0";
+            packageId = "geo-types 0.6.0";
             features = [ "rstar" ];
+          }
+          {
+            name = "geographiclib-rs";
+            packageId = "geographiclib-rs";
           }
           {
             name = "num-traits";
@@ -550,11 +480,10 @@ rec {
           }
           {
             name = "rstar";
-            packageId = "rstar 0.7.1";
+            packageId = "rstar";
           }
         ];
         features = {
-          "postgis-integration" = [ "postgis" ];
           "use-proj" = [ "proj" ];
           "use-serde" = [ "serde" "geo-types/serde" ];
         };
@@ -573,36 +502,58 @@ rec {
             name = "num-traits";
             packageId = "num-traits";
           }
-          {
-            name = "rstar";
-            packageId = "rstar 0.2.0";
-            optional = true;
-          }
         ];
         
-        resolvedDefaultFeatures = [ "rstar" ];
       };
-      "geo-types 0.5.0" = rec {
+      "geo-types 0.6.0" = rec {
         crateName = "geo-types";
-        version = "0.5.0";
+        version = "0.6.0";
         edition = "2018";
-        sha256 = "0bdfkdzp2c9sll1dq3rmbmwqm5c4rxxc6lqh8h0ncdji9hg0bzz0";
+        sha256 = "0qhch9c6k6pj6z3210ga0b8d9k7sk5nc9wyf646fhsg1in9l6w20";
         authors = [
           "Corey Farwell <coreyf@rwell.org>"
         ];
         dependencies = [
+          {
+            name = "approx";
+            packageId = "approx";
+          }
           {
             name = "num-traits";
             packageId = "num-traits";
           }
           {
             name = "rstar";
-            packageId = "rstar 0.7.1";
+            packageId = "rstar";
             optional = true;
+          }
+        ];
+        devDependencies = [
+          {
+            name = "approx";
+            packageId = "approx";
           }
         ];
         
         resolvedDefaultFeatures = [ "rstar" ];
+      };
+      "geographiclib-rs" = rec {
+        crateName = "geographiclib-rs";
+        version = "0.2.0";
+        edition = "2018";
+        crateBin = [];
+        sha256 = "0qd4gn8c2s82a30y642qc0d7h7i6vys0q5x8h90jryk8v3aj13mp";
+        authors = [
+          "Federico Dolce <psykopear@gmail.com>"
+          "Michael Kirk <michael.code@endoftheworl.de>"
+        ];
+        dependencies = [
+          {
+            name = "lazy_static";
+            packageId = "lazy_static";
+          }
+        ];
+        
       };
       "geojson" = rec {
         crateName = "geojson";
@@ -635,11 +586,63 @@ rec {
         
         resolvedDefaultFeatures = [ "geo-types" ];
       };
+      "hash32" = rec {
+        crateName = "hash32";
+        version = "0.1.1";
+        edition = "2015";
+        sha256 = "1k7lv7hsbzv14pz90cxay6v7avh6d6kcrra0rsc45b33dvw1l16l";
+        authors = [
+          "Jorge Aparicio <jorge@japaric.io>"
+        ];
+        dependencies = [
+          {
+            name = "byteorder";
+            packageId = "byteorder";
+            usesDefaultFeatures = false;
+          }
+        ];
+        features = {
+        };
+      };
+      "heapless" = rec {
+        crateName = "heapless";
+        version = "0.5.5";
+        edition = "2018";
+        sha256 = "1h1d6s1f9zn0rz2vkdn0b42kcnkmlpd90yhfyqqhpirv38ws5a3k";
+        authors = [
+          "Jorge Aparicio <jorge@japaric.io>"
+          "Per Lindgren <per.lindgren@ltu.se>"
+        ];
+        dependencies = [
+          {
+            name = "as-slice";
+            packageId = "as-slice";
+          }
+          {
+            name = "generic-array";
+            packageId = "generic-array 0.13.2";
+          }
+          {
+            name = "hash32";
+            packageId = "hash32";
+          }
+          {
+            name = "stable_deref_trait";
+            packageId = "stable_deref_trait";
+            usesDefaultFeatures = false;
+          }
+        ];
+        features = {
+          "default" = [ "cas" ];
+          "ufmt-impl" = [ "ufmt-write" ];
+        };
+        resolvedDefaultFeatures = [ "cas" "default" ];
+      };
       "hermit-abi" = rec {
         crateName = "hermit-abi";
-        version = "0.1.11";
-        edition = "2015";
-        sha256 = "05dzdbm3jcdpvp4c13gds405li7q9bpzscrxx5j1hyll1xz763ca";
+        version = "0.1.15";
+        edition = "2018";
+        sha256 = "1ac5bij39rhzs8zngfxi109dh0h3v0jl5ng8595f9yg7nsbd3vix";
         authors = [
           "Stefan Lankes"
         ];
@@ -657,9 +660,9 @@ rec {
       };
       "itoa" = rec {
         crateName = "itoa";
-        version = "0.4.5";
+        version = "0.4.6";
         edition = "2015";
-        sha256 = "13nxqrfnh83a7x5rw4wq2ilp8nxvwy74dxzysdg59dbxqk0agdxq";
+        sha256 = "1rnpb7rr8df76gnlk07b9086cn7fc0dxxy1ghh00q6nip7bklvyw";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -681,9 +684,9 @@ rec {
       };
       "libc" = rec {
         crateName = "libc";
-        version = "0.2.69";
+        version = "0.2.76";
         edition = "2015";
-        sha256 = "0180d47sglxzjh5rkdl077zxmsiafd53gqbz9q2sj8ab9445rs4r";
+        sha256 = "1hvv01y8cjlkg6xqgvflgq4p77p15a83w6xxpcggmrj4w3x5cm3m";
         authors = [
           "The Rust Project Developers"
         ];
@@ -696,9 +699,9 @@ rec {
       };
       "log" = rec {
         crateName = "log";
-        version = "0.4.8";
+        version = "0.4.11";
         edition = "2015";
-        sha256 = "1xz18ixccl5c6np4linv3ypc7hpmmgpc5zzd2ymp2ssfx0mhbdhl";
+        sha256 = "12xzqaflpiljn5cmxsbnbv9sjaj13ykhwsvll0gysbx4blbyvasg";
         authors = [
           "The Rust Project Developers"
         ];
@@ -729,26 +732,29 @@ rec {
       };
       "miniz_oxide" = rec {
         crateName = "miniz_oxide";
-        version = "0.3.6";
+        version = "0.4.1";
         edition = "2018";
-        sha256 = "198n4hfpq0qcxf275l6fpzh7b9cl7ck2xs6pjgpds74bazv9yrxa";
+        sha256 = "08mp4c1r3qzxd2gy8ckmnrd1r2zpk3v20cpaxphrf3qdljl5jxad";
         authors = [
           "Frommi <daniil.liferenko@gmail.com>"
           "oyvindln <oyvindln@users.noreply.github.com>"
         ];
         dependencies = [
           {
-            name = "adler32";
-            packageId = "adler32";
+            name = "adler";
+            packageId = "adler";
+            usesDefaultFeatures = false;
           }
         ];
-        
+        features = {
+          "rustc-dep-of-std" = [ "core" "alloc" "compiler_builtins" "adler/rustc-dep-of-std" ];
+        };
       };
       "num-traits" = rec {
         crateName = "num-traits";
-        version = "0.2.11";
+        version = "0.2.12";
         edition = "2015";
-        sha256 = "15khrlm1bra50nd48ijl1vln13m9xg4fxzghf28jp16ic5zf8ay6";
+        sha256 = "04fnzwlnn6fcy09jjbi9l7bj5dvg657x5c2sjgwfb3pl0z67n9mc";
         authors = [
           "The Rust Project Developers"
         ];
@@ -786,9 +792,9 @@ rec {
       };
       "osm_boundaries_utils" = rec {
         crateName = "osm_boundaries_utils";
-        version = "0.5.0";
+        version = "0.7.0";
         edition = "2015";
-        sha256 = "0ww9rm72jylzdvfhbwcxz6a4843qvlgiycy04v0rnkparc8rx2yk";
+        sha256 = "11vp69m5h7znjszadpk76v3diyjj5yvs5fl446bsd0ygcjvjl658";
         authors = [
           "dt.ro <dt.ro@canaltp.fr>"
           "Antoine Desbordes <antoine.desbordes@gmail.com>"
@@ -796,11 +802,11 @@ rec {
         dependencies = [
           {
             name = "geo";
-            packageId = "geo 0.12.2";
+            packageId = "geo";
           }
           {
             name = "geo-types";
-            packageId = "geo-types 0.4.3";
+            packageId = "geo-types 0.6.0";
           }
           {
             name = "log";
@@ -815,9 +821,9 @@ rec {
       };
       "osmpbfreader" = rec {
         crateName = "osmpbfreader";
-        version = "0.13.4";
+        version = "0.14.0";
         edition = "2015";
-        sha256 = "09l8glhyzjp3gd7b3ng43pvyl2gc4nza2w6j2m9ixw6j07g2smnk";
+        sha256 = "0wjnpi0aj57x9hfxzyprwh7g2zqz0zw7vwn4b1a6im3b8czyjpn3";
         authors = [
           "Guillaume Pinot <texitoi@texitoi.eu>"
         ];
@@ -858,6 +864,11 @@ rec {
           {
             name = "serde_derive";
             packageId = "serde_derive";
+          }
+          {
+            name = "smartstring";
+            packageId = "smartstring";
+            features = [ "serde" ];
           }
         ];
         buildDependencies = [
@@ -908,9 +919,9 @@ rec {
       };
       "proc-macro2" = rec {
         crateName = "proc-macro2";
-        version = "1.0.10";
+        version = "1.0.19";
         edition = "2018";
-        sha256 = "1qxbnl8i3a5b2nxb8kdxbq6kj3pd1ckhm35wm7z3jd7n5wlns96z";
+        sha256 = "04lb4n7g5z9mq6in39i7yb1m5bb107dfawc2rf4227npnn2z1x84";
         authors = [
           "Alex Crichton <alex@alexcrichton.com>"
           "David Tolnay <dtolnay@gmail.com>"
@@ -928,9 +939,9 @@ rec {
       };
       "protobuf" = rec {
         crateName = "protobuf";
-        version = "2.14.0";
-        edition = "2015";
-        sha256 = "11bl8hf522s9mbkckivnn9n8s3ss4g41w6jmfdsswmr5adqd71lf";
+        version = "2.17.0";
+        edition = "2018";
+        sha256 = "1qmik0kj0dd38w3zyclllmw78amsmpp1qzh620jfw4zjqwy1h56b";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -941,10 +952,10 @@ rec {
       };
       "protobuf-codegen" = rec {
         crateName = "protobuf-codegen";
-        version = "2.14.0";
+        version = "2.17.0";
         edition = "2015";
         crateBin = [];
-        sha256 = "031bx325lsgcx7wc76vc2cqph6q0b34jgc8nz0g2rkwcfnx3n4fy";
+        sha256 = "187rfd8gzwhfayqagdgqf4lfdwdwz6z2ax2zqsgpsviq2zha2q1k";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -958,10 +969,10 @@ rec {
       };
       "protobuf-codegen-pure" = rec {
         crateName = "protobuf-codegen-pure";
-        version = "2.14.0";
+        version = "2.17.0";
         edition = "2015";
         crateBin = [];
-        sha256 = "0h34gfqlb7bqmgqv1mfgy5wk35z5r2h5ki3p3pdcmw1vqzmly6id";
+        sha256 = "0pnqlqy6jk14shys0irg7ir14p1q0vdmgbwv25qp8qnvsgcn37l9";
         authors = [
           "Stepan Koltsov <stepan.koltsov@gmail.com>"
         ];
@@ -989,9 +1000,9 @@ rec {
       };
       "quote" = rec {
         crateName = "quote";
-        version = "1.0.3";
+        version = "1.0.7";
         edition = "2018";
-        sha256 = "0zwd6fp74xfg4jnnnwj4v84lkzif2giwj4ch1hka9g35ghc6rp1b";
+        sha256 = "0drzd6pq7whq7qhdvvs8wn6pbb0hhc12pz8wv80fb05ixhbksmma";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -1010,9 +1021,9 @@ rec {
       };
       "regex" = rec {
         crateName = "regex";
-        version = "1.3.7";
+        version = "1.3.9";
         edition = "2015";
-        sha256 = "14knp8k0r89lf6qanv0nh93br09q8lksd0hvf561kqr2941hy0m6";
+        sha256 = "1rnqga94ypykl2apgj26l2j1s9bvr2ix4dlzs323n6abyky80dww";
         authors = [
           "The Rust Project Developers"
         ];
@@ -1058,9 +1069,9 @@ rec {
       };
       "regex-syntax" = rec {
         crateName = "regex-syntax";
-        version = "0.6.17";
+        version = "0.6.18";
         edition = "2015";
-        sha256 = "1blmlgzcg7in3kcxqabpfzzrbnamr2i671flbrmlqhfps5bvvrbz";
+        sha256 = "1s648w7rwpxnq9iqwbyy43ar4al07906jpz0jxlql23bgjwjwh96";
         authors = [
           "The Rust Project Developers"
         ];
@@ -1121,15 +1132,19 @@ rec {
         ];
         
       };
-      "rstar 0.2.0" = rec {
+      "rstar" = rec {
         crateName = "rstar";
-        version = "0.2.0";
+        version = "0.8.2";
         edition = "2018";
-        sha256 = "1s3fwfk5qmafbgngz7y19992azd2j32ai99plv2q5yxy6x4gw2qj";
+        sha256 = "090r713xfm8b3xsf9g6dxzjnrn3v2j70cxwn3idxzp26sjv336iz";
         authors = [
           "Stefan Altmayer <stoeoef@gmail.com>"
         ];
         dependencies = [
+          {
+            name = "heapless";
+            packageId = "heapless";
+          }
           {
             name = "num-traits";
             packageId = "num-traits";
@@ -1139,54 +1154,19 @@ rec {
             packageId = "pdqselect";
           }
           {
-            name = "threadpool";
-            packageId = "threadpool";
-          }
-        ];
-        features = {
-          "serde_serialize" = [ "serde" "serde_derive" ];
-        };
-        resolvedDefaultFeatures = [ "default" ];
-      };
-      "rstar 0.7.1" = rec {
-        crateName = "rstar";
-        version = "0.7.1";
-        edition = "2018";
-        sha256 = "1dpna9h1k7gfswq48qni4nd9vvf6ib70y5bisrpp5lfbasmfll06";
-        authors = [
-          "Stefan Altmayer <stoeoef@gmail.com>"
-        ];
-        dependencies = [
-          {
-            name = "num-traits";
-            packageId = "num-traits";
-          }
-          {
-            name = "pdqselect";
-            packageId = "pdqselect";
+            name = "smallvec";
+            packageId = "smallvec";
           }
         ];
         features = {
         };
         resolvedDefaultFeatures = [ "default" ];
-      };
-      "rustc-demangle" = rec {
-        crateName = "rustc-demangle";
-        version = "0.1.16";
-        edition = "2015";
-        sha256 = "10qp42sl1wrdbgbbh8rnay2grm976z7hqgz32c4y09l1c071qsac";
-        authors = [
-          "Alex Crichton <alex@alexcrichton.com>"
-        ];
-        features = {
-          "rustc-dep-of-std" = [ "core" "compiler_builtins" ];
-        };
       };
       "ryu" = rec {
         crateName = "ryu";
-        version = "1.0.4";
-        edition = "2015";
-        sha256 = "1qa1g46584i1qvfpn8a96b2f1p4hslkfzrky7zmyyc24qqmn2ggd";
+        version = "1.0.5";
+        edition = "2018";
+        sha256 = "0vpqv1dj7fksa6hm3zpk5rbsjs0ifbfy7xwzsyyil0rx37a03lvi";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -1195,9 +1175,9 @@ rec {
       };
       "serde" = rec {
         crateName = "serde";
-        version = "1.0.106";
+        version = "1.0.115";
         edition = "2015";
-        sha256 = "169kg1px2k0hlxziiikdwy42wnrs2gjbvsv7yxygcwi08736mprn";
+        sha256 = "1mamxl1ijys9r6jk8pj5vjxs7l60y11i845mhjpkhwnsya49lk75";
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
           "David Tolnay <dtolnay@gmail.com>"
@@ -1223,9 +1203,9 @@ rec {
       };
       "serde_derive" = rec {
         crateName = "serde_derive";
-        version = "1.0.106";
+        version = "1.0.115";
         edition = "2015";
-        sha256 = "0v7a2rkpx9hi70pv2wr2h0h07rgmr7gi37v0s4dn5f2gpwx9wm4y";
+        sha256 = "0j6w64m3z7kaagq6j0qmn7q84jkvnfll1a4205mc6g57s38yx7v0";
         procMacro = true;
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
@@ -1252,9 +1232,9 @@ rec {
       };
       "serde_json" = rec {
         crateName = "serde_json";
-        version = "1.0.51";
+        version = "1.0.57";
         edition = "2018";
-        sha256 = "1acd43sc1g9w4hzfa2kfbahj44r61fxqh14s3qsnhcv2w9zba1ys";
+        sha256 = "0p371b4618w5fb7isji9xmjhsaxjslgxa2gv8lkyq4imn6ysqkhn";
         authors = [
           "Erick Tryzelaar <erick.tryzelaar@gmail.com>"
           "David Tolnay <dtolnay@gmail.com>"
@@ -1283,18 +1263,65 @@ rec {
         };
         resolvedDefaultFeatures = [ "default" "std" ];
       };
+      "smallvec" = rec {
+        crateName = "smallvec";
+        version = "1.4.2";
+        edition = "2018";
+        sha256 = "0lp2ax6hfbcsqa92xkdz8vnlfc0fhpqczv62l64kvgsbp2b7dvpv";
+        authors = [
+          "The Servo Project Developers"
+        ];
+        features = {
+        };
+      };
+      "smartstring" = rec {
+        crateName = "smartstring";
+        version = "0.2.3";
+        edition = "2018";
+        sha256 = "03fqkzrmsxabq2s2kka1ylfax0bx01n8ajbdn7kr9bcj47bcgpib";
+        authors = [
+          "Bodil Stokke <bodil@bodil.org>"
+        ];
+        dependencies = [
+          {
+            name = "serde";
+            packageId = "serde";
+            optional = true;
+          }
+          {
+            name = "static_assertions";
+            packageId = "static_assertions";
+          }
+        ];
+        features = {
+          "test" = [ "arbitrary" "arbitrary/derive" ];
+        };
+        resolvedDefaultFeatures = [ "serde" ];
+      };
       "stable_deref_trait" = rec {
         crateName = "stable_deref_trait";
-        version = "1.1.1";
+        version = "1.2.0";
         edition = "2015";
-        sha256 = "1j2lkgakksmz4vc5hfawcch2ipiskrhjs1sih0f3br7s7rys58fv";
+        sha256 = "1lxjr8q2n534b2lhkxd6l6wcddzjvnksi58zv11f9y0jjmr15wd8";
         authors = [
           "Robert Grosse <n210241048576@gmail.com>"
         ];
         features = {
           "default" = [ "std" ];
+          "std" = [ "alloc" ];
         };
-        resolvedDefaultFeatures = [ "std" ];
+        resolvedDefaultFeatures = [ "alloc" "std" ];
+      };
+      "static_assertions" = rec {
+        crateName = "static_assertions";
+        version = "1.1.0";
+        edition = "2015";
+        sha256 = "0gsl6xmw10gvn3zs1rv99laj5ig7ylffnh71f9l34js4nr4r7sx2";
+        authors = [
+          "Nikolai Vazquez"
+        ];
+        features = {
+        };
       };
       "strsim" = rec {
         crateName = "strsim";
@@ -1308,9 +1335,9 @@ rec {
       };
       "syn" = rec {
         crateName = "syn";
-        version = "1.0.18";
+        version = "1.0.39";
         edition = "2018";
-        sha256 = "04wj6qc9bczf1q75qzycx013s1dlgrbbjnddnk7cfa57q24782j1";
+        sha256 = "1y8ikwihdrfn64ybrhaqlbxlcf4g43s8mad36n47yz7ycxjqs7c9";
         authors = [
           "David Tolnay <dtolnay@gmail.com>"
         ];
@@ -1335,44 +1362,9 @@ rec {
           "default" = [ "derive" "parsing" "printing" "clone-impls" "proc-macro" ];
           "printing" = [ "quote" ];
           "proc-macro" = [ "proc-macro2/proc-macro" "quote/proc-macro" ];
+          "test" = [ "syn-test-suite/all-features" ];
         };
         resolvedDefaultFeatures = [ "clone-impls" "default" "derive" "extra-traits" "fold" "full" "parsing" "printing" "proc-macro" "quote" "visit" ];
-      };
-      "synstructure" = rec {
-        crateName = "synstructure";
-        version = "0.12.3";
-        edition = "2018";
-        sha256 = "0igmc5fzpk6fg7kgff914j05lbpc6ai2wmji312v2h8vvjhnwrb7";
-        authors = [
-          "Nika Layzell <nika@thelayzells.com>"
-        ];
-        dependencies = [
-          {
-            name = "proc-macro2";
-            packageId = "proc-macro2";
-            usesDefaultFeatures = false;
-          }
-          {
-            name = "quote";
-            packageId = "quote";
-            usesDefaultFeatures = false;
-          }
-          {
-            name = "syn";
-            packageId = "syn";
-            usesDefaultFeatures = false;
-            features = [ "derive" "parsing" "printing" "clone-impls" "visit" "extra-traits" ];
-          }
-          {
-            name = "unicode-xid";
-            packageId = "unicode-xid";
-          }
-        ];
-        features = {
-          "default" = [ "proc-macro" ];
-          "proc-macro" = [ "proc-macro2/proc-macro" "syn/proc-macro" "quote/proc-macro" ];
-        };
-        resolvedDefaultFeatures = [ "default" "proc-macro" ];
       };
       "thread_local" = rec {
         crateName = "thread_local";
@@ -1386,24 +1378,6 @@ rec {
           {
             name = "lazy_static";
             packageId = "lazy_static";
-          }
-        ];
-        
-      };
-      "threadpool" = rec {
-        crateName = "threadpool";
-        version = "1.8.0";
-        edition = "2015";
-        sha256 = "0rkx0wzaw9v958ckiliwl42m2j7c59j3r5vdj6kda5bw8j2f3np8";
-        authors = [
-          "The Rust Project Developers"
-          "Corey Farwell <coreyf@rwell.org>"
-          "Stefan Schindler <dns2utf8@estada.ch>"
-        ];
-        dependencies = [
-          {
-            name = "num_cpus";
-            packageId = "num_cpus";
           }
         ];
         
@@ -1437,11 +1411,24 @@ rec {
         ];
         
       };
+      "typenum" = rec {
+        crateName = "typenum";
+        version = "1.12.0";
+        edition = "2015";
+        sha256 = "0cvbksljz61ian21fnn0h51kphl0pwpzb932bv4s0rwy1wh8lg1p";
+        build = "build/main.rs";
+        authors = [
+          "Paho Lurie-Gregg <paho@paholg.com>"
+          "Andre Bogus <bogusandre@gmail.com>"
+        ];
+        features = {
+        };
+      };
       "unicode-xid" = rec {
         crateName = "unicode-xid";
-        version = "0.2.0";
+        version = "0.2.1";
         edition = "2015";
-        sha256 = "0z09fn515xm7zyr0mmdyxa9mx2f7azcpv74pqmg611iralwpcvl2";
+        sha256 = "0r6mknipyy9vpz8mwmxvkx65ff2ha1n2pxqjj6f46lcn8yrhpzpp";
         authors = [
           "erick.tryzelaar <erick.tryzelaar@gmail.com>"
           "kwantam <kwantam@gmail.com>"
@@ -1467,9 +1454,10 @@ rec {
 
     # This doesn't appear to be officially documented anywhere yet.
     # See https://github.com/rust-lang-nursery/rust-forge/issues/101.
-    os = if stdenv.hostPlatform.isDarwin
-    then "macos"
-    else stdenv.hostPlatform.parsed.kernel.name;
+    os =
+      if stdenv.hostPlatform.isDarwin
+      then "macos"
+      else stdenv.hostPlatform.parsed.kernel.name;
     arch = stdenv.hostPlatform.parsed.cpu.name;
     family = "unix";
     env = "gnu";
@@ -1541,13 +1529,15 @@ rec {
       # building the actual lib and bin targets We just have to pass `--test`
       # to rustc and it will do the right thing.  We execute the tests and copy
       # their log and the test executables to $out for later inspection.
-      test = let
-        drv = testCrate.override (
-          _: {
-            buildTests = true;
-          }
-        );
-      in
+      test =
+        let
+          drv = testCrate.override
+            (
+              _: {
+                buildTests = true;
+              }
+            );
+        in
         pkgs.runCommand "run-tests-${testCrate.name}" {
           inherit testCrateFlags;
           buildInputs = testInputs;
@@ -1583,12 +1573,13 @@ rec {
           done
         '';
     in
-      crate.overrideAttrs (
+    crate.overrideAttrs
+      (
         old: {
           checkPhase = ''
             test -e ${test}
           '';
-          passthru = (old.passthru or {}) // {
+          passthru = (old.passthru or { }) // {
             inherit test;
           };
         }
@@ -1601,50 +1592,52 @@ rec {
     , crateOverrides ? defaultCrateOverrides
     , buildRustCrateFunc ? null
     , runTests ? false
-    , testCrateFlags ? []
-    , testInputs ? []
+    , testCrateFlags ? [ ]
+    , testInputs ? [ ]
     }:
-      lib.makeOverridable
-        (
-          { features
-          , crateOverrides
-          , runTests
-          , testCrateFlags
-          , testInputs
-          }:
-            let
-              buildRustCrateFuncOverriden = if buildRustCrateFunc != null
-              then buildRustCrateFunc
-              else (
-                if crateOverrides == pkgs.defaultCrateOverrides
-                then buildRustCrate
-                else buildRustCrate.override {
-                  defaultCrateOverrides = crateOverrides;
-                }
-              );
-              builtRustCrates = builtRustCratesWithFeatures {
-                inherit packageId features;
-                buildRustCrateFunc = buildRustCrateFuncOverriden;
-                runTests = false;
-              };
-              builtTestRustCrates = builtRustCratesWithFeatures {
-                inherit packageId features;
-                buildRustCrateFunc = buildRustCrateFuncOverriden;
-                runTests = true;
-              };
-              drv = builtRustCrates.${packageId};
-              testDrv = builtTestRustCrates.${packageId};
-              derivation = if runTests then
-                crateWithTest {
-                  crate = drv;
-                  testCrate = testDrv;
-                  inherit testCrateFlags testInputs;
-                }
-              else drv;
-            in
-              derivation
-        )
-        { inherit features crateOverrides runTests testCrateFlags testInputs; };
+    lib.makeOverridable
+      (
+        { features
+        , crateOverrides
+        , runTests
+        , testCrateFlags
+        , testInputs
+        }:
+        let
+          buildRustCrateFuncOverriden =
+            if buildRustCrateFunc != null
+            then buildRustCrateFunc
+            else (
+              if crateOverrides == pkgs.defaultCrateOverrides
+              then buildRustCrate
+              else buildRustCrate.override {
+                defaultCrateOverrides = crateOverrides;
+              }
+            );
+          builtRustCrates = builtRustCratesWithFeatures {
+            inherit packageId features;
+            buildRustCrateFunc = buildRustCrateFuncOverriden;
+            runTests = false;
+          };
+          builtTestRustCrates = builtRustCratesWithFeatures {
+            inherit packageId features;
+            buildRustCrateFunc = buildRustCrateFuncOverriden;
+            runTests = true;
+          };
+          drv = builtRustCrates.${packageId};
+          testDrv = builtTestRustCrates.${packageId};
+          derivation =
+            if runTests then
+              crateWithTest {
+                crate = drv;
+                testCrate = testDrv;
+                inherit testCrateFlags testInputs;
+              }
+            else drv;
+        in
+        derivation
+      )
+      { inherit features crateOverrides runTests testCrateFlags testInputs; };
 
   /* Returns an attr set with packageId mapped to the result of buildRustCrateFunc
      for the corresponding crate.
@@ -1664,76 +1657,94 @@ rec {
       assert (builtins.isBool runTests);
       let
         rootPackageId = packageId;
-        mergedFeatures = mergePackageFeatures (
-          args // {
-            inherit rootPackageId;
-            target = target // { test = runTests; };
-          }
-        );
-
+        mergedFeatures = mergePackageFeatures
+          (
+            args // {
+              inherit rootPackageId;
+              target = target // { test = runTests; };
+            }
+          );
         buildByPackageId = packageId: buildByPackageIdImpl packageId;
 
         # Memoize built packages so that reappearing packages are only built once.
         builtByPackageId =
           lib.mapAttrs (packageId: value: buildByPackageId packageId) crateConfigs;
-
         buildByPackageIdImpl = packageId:
           let
-            features = mergedFeatures."${packageId}" or [];
+            features = mergedFeatures."${packageId}" or [ ];
             crateConfig' = crateConfigs."${packageId}";
             crateConfig =
               builtins.removeAttrs crateConfig' [ "resolvedDefaultFeatures" "devDependencies" ];
             devDependencies =
               lib.optionals
                 (runTests && packageId == rootPackageId)
-                (crateConfig'.devDependencies or []);
+                (crateConfig'.devDependencies or [ ]);
             dependencies =
               dependencyDerivations {
                 inherit builtByPackageId features target;
                 dependencies =
-                  (crateConfig.dependencies or [])
+                  (crateConfig.dependencies or [ ])
                   ++ devDependencies;
               };
             buildDependencies =
               dependencyDerivations {
                 inherit builtByPackageId features target;
-                dependencies = crateConfig.buildDependencies or [];
+                dependencies = crateConfig.buildDependencies or [ ];
               };
-
             filterEnabledDependenciesForThis = dependencies: filterEnabledDependencies {
               inherit dependencies features target;
             };
-
             dependenciesWithRenames =
-              lib.filter (d: d ? "rename") (
-                filterEnabledDependenciesForThis
-                  (
-                    (crateConfig.buildDependencies or [])
-                    ++ (crateConfig.dependencies or [])
-                    ++ devDependencies
-                  )
-              );
-
+              lib.filter (d: d ? "rename")
+                (
+                  filterEnabledDependenciesForThis
+                    (
+                      (crateConfig.buildDependencies or [ ])
+                      ++ (crateConfig.dependencies or [ ])
+                      ++ devDependencies
+                    )
+                );
+            # Crate renames have the form:
+            #
+            # {
+            #    crate_name = [
+            #       { version = "1.2.3"; rename = "crate_name01"; }
+            #    ];
+            #    # ...
+            # }
             crateRenames =
-              builtins.listToAttrs
-                (map (d: { name = d.name; value = d.rename; }) dependenciesWithRenames);
+              let
+                grouped =
+                  lib.groupBy
+                    (dependency: dependency.name)
+                    dependenciesWithRenames;
+                versionAndRename = dep:
+                  let
+                    package = builtByPackageId."${dep.packageId}";
+                  in
+                  { inherit (dep) rename; version = package.version; };
+              in
+              lib.mapAttrs (name: choices: builtins.map versionAndRename choices) grouped;
           in
-            buildRustCrateFunc (
+          buildRustCrateFunc
+            (
               crateConfig // {
                 src = crateConfig.src or (
-                  pkgs.fetchurl {
+                  pkgs.fetchurl rec {
                     name = "${crateConfig.crateName}-${crateConfig.version}.tar.gz";
                     # https://www.pietroalbini.org/blog/downloading-crates-io/
                     # Not rate-limited, CDN URL.
                     url = "https://static.crates.io/crates/${crateConfig.crateName}/${crateConfig.crateName}-${crateConfig.version}.crate";
-                    sha256 = crateConfig.sha256;
+                    sha256 =
+                      assert (lib.assertMsg (crateConfig ? sha256) "Missing sha256 for ${name}");
+                      crateConfig.sha256;
                   }
                 );
                 inherit features dependencies buildDependencies crateRenames release;
               }
             );
       in
-        builtByPackageId;
+      builtByPackageId;
 
   /* Returns the actual derivations for the given dependencies. */
   dependencyDerivations =
@@ -1752,7 +1763,7 @@ rec {
         };
         depDerivation = dependency: builtByPackageId.${dependency.packageId};
       in
-        map depDerivation enabledDependencies;
+      map depDerivation enabledDependencies;
 
   /* Returns a sanitized version of val with all values substituted that cannot
      be serialized as JSON.
@@ -1777,16 +1788,17 @@ rec {
           inherit packageId;
         };
         sanitizedBuildTree = sanitizeForJson buildTree;
-        dependencyTree = sanitizeForJson (
-          buildRustCrateWithFeatures {
-            buildRustCrateFunc = crate: {
-              "01_crateName" = crate.crateName or false;
-              "02_features" = crate.features or [];
-              "03_dependencies" = crate.dependencies or [];
-            };
-            inherit packageId;
-          }
-        );
+        dependencyTree = sanitizeForJson
+          (
+            buildRustCrateWithFeatures {
+              buildRustCrateFunc = crate: {
+                "01_crateName" = crate.crateName or false;
+                "02_features" = crate.features or [ ];
+                "03_dependencies" = crate.dependencies or [ ];
+              };
+              inherit packageId;
+            }
+          );
         mergedPackageFeatures = mergePackageFeatures {
           features = rootFeatures;
           inherit packageId target;
@@ -1796,7 +1808,7 @@ rec {
         };
       };
     in
-      { internal = debug; };
+    { internal = debug; };
 
   /* Returns differences between cargo default features and crate2nix default
      features.
@@ -1816,7 +1828,7 @@ rec {
             "crate2nix"
             (mergePackageFeatures { inherit crateConfigs packageId target; features = [ "default" ]; });
         configs = prefixValues "cargo" crateConfigs;
-        combined = lib.foldAttrs (a: b: a // b) {} [ mergedFeatures configs ];
+        combined = lib.foldAttrs (a: b: a // b) { } [ mergedFeatures configs ];
         onlyInCargo =
           builtins.attrNames
             (lib.filterAttrs (n: v: !(v ? "crate2nix") && (v ? "cargo")) combined);
@@ -1828,13 +1840,13 @@ rec {
             n: v:
               (v ? "crate2nix")
               && (v ? "cargo")
-              && (v.crate2nix.features or []) != (v."cargo".resolved_default_features or [])
+              && (v.crate2nix.features or [ ]) != (v."cargo".resolved_default_features or [ ])
           )
           combined;
       in
-        builtins.toJSON {
-          inherit onlyInCargo onlyInCrate2Nix differentFeatures;
-        };
+      builtins.toJSON {
+        inherit onlyInCargo onlyInCrate2Nix differentFeatures;
+      };
 
   /* Returns an attrset mapping packageId to the list of enabled features.
 
@@ -1847,7 +1859,7 @@ rec {
     , rootPackageId ? packageId
     , features ? rootFeatures
     , dependencyPath ? [ crates.${packageId}.crateName ]
-    , featuresByPackageId ? {}
+    , featuresByPackageId ? { }
     , target
       # Adds devDependencies to the crate with rootPackageId.
     , runTests ? false
@@ -1863,15 +1875,13 @@ rec {
       assert (builtins.isBool runTests);
       let
         crateConfig = crateConfigs."${packageId}" or (builtins.throw "Package not found: ${packageId}");
-        expandedFeatures = expandFeatures (crateConfig.features or {}) features;
-
+        expandedFeatures = expandFeatures (crateConfig.features or { }) features;
         depWithResolvedFeatures = dependency:
           let
             packageId = dependency.packageId;
             features = dependencyFeatures expandedFeatures dependency;
           in
-            { inherit packageId features; };
-
+          { inherit packageId features; };
         resolveDependencies = cache: path: dependencies:
           assert (builtins.isAttrs cache);
           assert (builtins.isList dependencies);
@@ -1883,45 +1893,43 @@ rec {
             directDependencies = map depWithResolvedFeatures enabledDependencies;
             foldOverCache = op: lib.foldl op cache directDependencies;
           in
-            foldOverCache
-              (
-                cache: { packageId, features }:
-                  let
-                    cacheFeatures = cache.${packageId} or [];
-                    combinedFeatures = sortedUnique (cacheFeatures ++ features);
-                  in
-                    if cache ? ${packageId} && cache.${packageId} == combinedFeatures
-                    then cache
-                    else mergePackageFeatures {
-                      features = combinedFeatures;
-                      featuresByPackageId = cache;
-                      inherit crateConfigs packageId target runTests rootPackageId;
-                    }
-              );
-
+          foldOverCache
+            (
+              cache: { packageId, features }:
+                let
+                  cacheFeatures = cache.${packageId} or [ ];
+                  combinedFeatures = sortedUnique (cacheFeatures ++ features);
+                in
+                if cache ? ${packageId} && cache.${packageId} == combinedFeatures
+                then cache
+                else mergePackageFeatures {
+                  features = combinedFeatures;
+                  featuresByPackageId = cache;
+                  inherit crateConfigs packageId target runTests rootPackageId;
+                }
+            );
         cacheWithSelf =
           let
-            cacheFeatures = featuresByPackageId.${packageId} or [];
+            cacheFeatures = featuresByPackageId.${packageId} or [ ];
             combinedFeatures = sortedUnique (cacheFeatures ++ expandedFeatures);
           in
-            featuresByPackageId // {
-              "${packageId}" = combinedFeatures;
-            };
-
+          featuresByPackageId // {
+            "${packageId}" = combinedFeatures;
+          };
         cacheWithDependencies =
-          resolveDependencies cacheWithSelf "dep" (
-            crateConfig.dependencies or []
-            ++ lib.optionals
-              (runTests && packageId == rootPackageId)
-              (crateConfig.devDependencies or [])
-          );
-
+          resolveDependencies cacheWithSelf "dep"
+            (
+              crateConfig.dependencies or [ ]
+              ++ lib.optionals
+                (runTests && packageId == rootPackageId)
+                (crateConfig.devDependencies or [ ])
+            );
         cacheWithAll =
           resolveDependencies
             cacheWithDependencies "build"
-            (crateConfig.buildDependencies or []);
+            (crateConfig.buildDependencies or [ ]);
       in
-        cacheWithAll;
+      cacheWithAll;
 
   /* Returns the enabled dependencies given the enabled features. */
   filterEnabledDependencies = { dependencies, features, target }:
@@ -1932,14 +1940,14 @@ rec {
     lib.filter
       (
         dep:
-          let
-            targetFunc = dep.target or (features: true);
-          in
-            targetFunc { inherit features target; }
-            && (
-              !(dep.optional or false)
-              || builtins.any (doesFeatureEnableDependency dep) features
-            )
+        let
+          targetFunc = dep.target or (features: true);
+        in
+        targetFunc { inherit features target; }
+        && (
+          !(dep.optional or false)
+          || builtins.any (doesFeatureEnableDependency dep) features
+        )
       )
       dependencies;
 
@@ -1950,9 +1958,9 @@ rec {
       len = builtins.stringLength prefix;
       startsWithPrefix = builtins.substring 0 len feature == prefix;
     in
-      (rename == null && feature == name)
-      || (rename != null && rename == feature)
-      || startsWithPrefix;
+    (rename == null && feature == name)
+    || (rename != null && rename == feature)
+    || startsWithPrefix;
 
   /* Returns the expanded features for the given inputFeatures by applying the
      rules in featureMap.
@@ -1966,10 +1974,10 @@ rec {
     let
       expandFeature = feature:
         assert (builtins.isString feature);
-        [ feature ] ++ (expandFeatures featureMap (featureMap."${feature}" or []));
+        [ feature ] ++ (expandFeatures featureMap (featureMap."${feature}" or [ ]));
       outFeatures = lib.concatMap expandFeature inputFeatures;
     in
-      sortedUnique outFeatures;
+    sortedUnique outFeatures;
 
   /*
      Returns the actual features for the given dependency.
@@ -1980,29 +1988,30 @@ rec {
     assert (builtins.isList features);
     assert (builtins.isAttrs dependency);
     let
-      defaultOrNil = if dependency.usesDefaultFeatures or true
-      then [ "default" ]
-      else [];
-      explicitFeatures = dependency.features or [];
+      defaultOrNil =
+        if dependency.usesDefaultFeatures or true
+        then [ "default" ]
+        else [ ];
+      explicitFeatures = dependency.features or [ ];
       additionalDependencyFeatures =
         let
           dependencyPrefix = (dependency.rename or dependency.name) + "/";
           dependencyFeatures =
             builtins.filter (f: lib.hasPrefix dependencyPrefix f) features;
         in
-          builtins.map (lib.removePrefix dependencyPrefix) dependencyFeatures;
+        builtins.map (lib.removePrefix dependencyPrefix) dependencyFeatures;
     in
-      defaultOrNil ++ explicitFeatures ++ additionalDependencyFeatures;
+    defaultOrNil ++ explicitFeatures ++ additionalDependencyFeatures;
 
   /* Sorts and removes duplicates from a list of strings. */
   sortedUnique = features:
     assert (builtins.isList features);
     assert (builtins.all builtins.isString features);
     let
-      outFeaturesSet = lib.foldl (set: feature: set // { "${feature}" = 1; }) {} features;
+      outFeaturesSet = lib.foldl (set: feature: set // { "${feature}" = 1; }) { } features;
       outFeaturesUnique = builtins.attrNames outFeaturesSet;
     in
-      builtins.sort (a: b: a < b) outFeaturesUnique;
+    builtins.sort (a: b: a < b) outFeaturesUnique;
 
   deprecationWarning = message: value:
     if strictDeprecation
