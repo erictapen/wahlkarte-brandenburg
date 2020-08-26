@@ -92,6 +92,7 @@
             darkhttpd
             cargo
             rustc
+            python3Packages.openpyxl
           ];
         };
     };
