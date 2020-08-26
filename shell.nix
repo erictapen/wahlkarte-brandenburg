@@ -1,6 +1,7 @@
 let
   pkgs = import <nixpkgs> {};
-in pkgs.mkShell {
+in
+pkgs.mkShell {
   buildInputs = with pkgs; [
     darkhttpd
   ];
