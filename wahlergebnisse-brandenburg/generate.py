@@ -32,6 +32,7 @@ def generate_election_results(config):
 
     worksheet = workbook["Brandenburg_Europawahl_W"]
 
+    # determine all available parties
     parties = {}
     rowi = 20 # "T" in excel rows
     while True:
@@ -44,12 +45,14 @@ def generate_election_results(config):
 
     print("Es gibt " + str(len(parties)) + " Parteien.")
 
+    # prepare overall structure of result dict
     result = dict()
     result["_absolute"] = defaultdict(int)
     for party in parties:
         result[party] = defaultdict(int)
 
-    for line in range(2, 3813):
+    # Iterate for every wahlbezirk for every party and aggregate results
+    for line in range(config["start_row"], config["end_row"]):
         print(str(line) + ": " + str(worksheet["F" + str(line)].value))
         lk_nr = worksheet[keys["Landkreisnummer"] + str(line)].value
         # The AGS has sometimes two extra digits. We don't want them yet.
@@ -64,6 +67,8 @@ def generate_election_results(config):
             result[party][lk_nr] += worksheet[party_key + str(line)].value
             result[party][ags] += worksheet[party_key + str(line)].value
 
+    # Determine what was the highest percentage the party ever gathered in a given Wahlbezirk.
+    # This is useful for visualization so we don't have to compute it in the browser.
     for party, value in result.items():
         highest_ratio = 0.0
         for ags, votes in result[party].items():
@@ -75,6 +80,8 @@ def generate_election_results(config):
 
 generate_election_results( {
     "rawfile": "DL_BB_EU2019.xlsx",
-    "outfile": "eu2019.json"
+    "outfile": "eu2019.json",
+    "start_row": 2,
+    "end_row": 3813
     } )
 
