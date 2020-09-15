@@ -115,6 +115,7 @@ var colors = [
   '#003c30',
 ]
 
+// Reload (cached) election data, paint the individual regions
 function updateMap(wahl, partei) {
     loadJSON('elections/' + wahl + '.json', function (data) {
       console.log(wahl + ' loaded')
@@ -133,6 +134,7 @@ function updateMap(wahl, partei) {
         })
       })
       info.update()
+      document.title = partei + " - " + wahl + " - Wahlergebnisse Brandenburg"
     }, function (xhr) {
       console.error(xhr)
     })
