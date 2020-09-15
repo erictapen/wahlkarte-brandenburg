@@ -114,7 +114,7 @@ var colors = [
 ]
 
 // Reload (cached) election data, paint the individual regions
-function updateMap(wahl, partei) {
+function updateMap(wahl, wahl_h, partei) {
     loadJSON('elections/' + wahl + '.json', function (data) {
       console.log(wahl + ' loaded')
       electionData = data
@@ -132,7 +132,7 @@ function updateMap(wahl, partei) {
         })
       })
       info.update()
-      document.title = partei + " - " + wahl + " - Wahlergebnisse Brandenburg"
+      document.title = partei + " - " + wahl_h + " - Wahlergebnisse Brandenburg"
     }, function (xhr) {
       console.error(xhr)
     })
@@ -140,17 +140,39 @@ function updateMap(wahl, partei) {
 
 function init() {
   console.log('Initializing...')
-  document.querySelector('.select-wahl-partei').addEventListener('change', event => {
+
+  parentElement = document.getElementById("menu")
+  selectElement = document.createElement("select")
+  selectElement.id = "select-wahl-partei"
+  selectElement.style = "position: absolute; top: 10px; right: 10px;"
+  parentElement.appendChild(selectElement)
+  selectElement.addEventListener('change', event => {
     if (!event.target.value) {
       console.error("No value set?")
       return
     }
     console.log('start loading')
     wahl = JSON.parse(event.target.value)["wahl"]
+    wahl_h = JSON.parse(event.target.value)["wahl_h"]
     partei = JSON.parse(event.target.value)["partei"]
     electionData = undefined // unset electionData, so we don't accidentally display data from former selection
-    updateMap(wahl, partei)
+    updateMap(wahl, wahl_h, partei)
   })
+  loadJSON('elections/select_options.json', function (data) {
+    for (var i = 0; i < data.length; i++) {
+        wahl = data[i].name
+        wahl_h = data[i]["human_readable_name"]
+        data[i].parties.forEach(partei => {
+          option = document.createElement("option")
+          option.text = wahl_h + " - " + partei
+          option.value = JSON.stringify( { wahl: wahl, wahl_h: wahl_h, partei: partei } )
+          selectElement.appendChild(option)
+        })
+    }
+  }, function (xhr) {
+    console.error(xhr)
+  })
+
   partei = "AfD"
-  updateMap("eu2019", "AfD")
+  updateMap("eu2019", "Europawahl 2019", "AfD")
 }

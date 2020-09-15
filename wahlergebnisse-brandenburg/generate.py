@@ -18,6 +18,7 @@ def generate_election_results(*,
         rawfile,
         outfile,
         sheetname="Ergebnis",
+        human_readable_name,
         first_party_index,
         start_row=2,
         end_row,
@@ -43,6 +44,13 @@ def generate_election_results(*,
             break
 
     print("Es gibt " + str(len(parties)) + " Parteien in " + rawfile + ".")
+
+    # build a data structure containing all party names for this particular election.
+    select_options.append( {
+        "name": outfile.replace(".json", ""),
+        "human_readable_name": human_readable_name,
+        "parties": list(parties.keys())
+        } )
 
     # prepare overall structure of result dict
     result = dict()
@@ -71,7 +79,7 @@ def generate_election_results(*,
             result[party][ags] += worksheet[party_key + str(line)].value
 
     # Determine what was the highest percentage the party ever gathered in a given Wahlbezirk.
-    # This is useful for visualization so we don't have to compute it in the browser.
+    # This is useful for visualization as we don't have to calculate it in the browser.
     for party, value in result.items():
         highest_ratio = 0.0
         for ags, votes in result[party].items():
@@ -81,10 +89,19 @@ def generate_election_results(*,
     with open(sys.argv[2] + outfile, "w", encoding="utf-8") as out_file:
         json.dump(result, out_file, ensure_ascii=False, indent=4)
 
+# Write the content of the select menu to file.
+def write_select_options( select_options ):
+    with open(sys.argv[2] + "select_options.json", "w", encoding="utf-8") as f:
+        json.dump(select_options, f, ensure_ascii=False)
+
+# Data structure that will contain all the contents for the select menu.
+select_options = []
+
 generate_election_results(
     rawfile="DL_BB_EU2019.xlsx",
     outfile = "eu2019.json",
     sheetname = "Brandenburg_Europawahl_W",
+    human_readable_name = "Europawahl 2019",
     first_party_index = 20, # T
     end_row = 3812,
     keys = {
@@ -98,6 +115,7 @@ generate_election_results(
     rawfile = "DL_BB_EU2014.xlsx",
     outfile = "eu2014.json",
     sheetname = "Ergebnis",
+    human_readable_name = "Europawahl 2014",
     first_party_index = 18, # R
     end_row = 3679,
     keys = {
@@ -106,3 +124,6 @@ generate_election_results(
         "Gültige Stimmen": "Q"
         }
     )
+
+write_select_options(select_options)
+
