@@ -2,7 +2,7 @@ var mymap = L.map('mapid').setView([52.392, 13.387], 8)
 
 var geojson = {}
 var electionData
-var party
+var partei
 
 function highlightFeature(e) {
   var layer = e.target
@@ -47,17 +47,15 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
-  if (typeof electionData == 'undefined') {
-    this._div.innerHTML = 'Wähle eine Wahl aus.'
-  } else if (typeof 'party' == 'undefined') {
-    this._div.innerHTML = 'Wähle eine Partei aus.'
-  } else if (!props) {
+  if (!props) {
     this._div.innerHTML = 'Bewege den Cursor über ein Gebiet.'
+  } else if (!electionData) {
+    this._div.innerHTML = 'Warte darauf, dass Wahldaten geladen werden.'
   } else {
     absolute_votes = electionData['_absolute'][props.ags]
-    relative_votes = electionData[party][props.ags] / absolute_votes
+    relative_votes = electionData[partei][props.ags] / absolute_votes
     this._div.innerHTML = '<h4>Name: <b>' + props.name + '</b></h4>' +
-      '<h4>Stimmen ' + party + ': <b>' + (relative_votes * 100).toFixed(2) +
+      '<h4>Stimmen ' + partei + ': <b>' + (relative_votes * 100).toFixed(2) +
       '%</b></h4>' +
       '<h4>Gültige Stimmen insgesamt: <b>' + absolute_votes + '</b></h4>'
   }
@@ -117,40 +115,42 @@ var colors = [
   '#003c30',
 ]
 
-function init() {
-  console.log('Initializing...')
-  document.querySelector('.select-wahl').addEventListener('change', event => {
-    if (!event.target.value) {
-      return
-    }
-    console.log('start loading')
-    loadJSON('elections/' + event.target.value + '.json', function (data) {
-      console.log(event.target.value + ' loaded')
+function updateMap(wahl, partei) {
+    loadJSON('elections/' + wahl + '.json', function (data) {
+      console.log(wahl + ' loaded')
       electionData = data
+      geojson.eachLayer(function (layer) {
+        ags = layer.feature.properties.ags
+        fraction = Math.floor(
+          (colors.length - 1) *
+            ((electionData[partei][ags] / electionData['_absolute'][ags]) /
+              electionData[partei]['_highest_ratio']),
+        )
+        layer.setStyle({
+          fillColor: colors[fraction],
+          fillOpacity: 1.0,
+          weight: 0.8,
+        })
+      })
       info.update()
     }, function (xhr) {
       console.error(xhr)
     })
-  })
-  document.querySelector('.select-partei').addEventListener('change', event => {
+}
+
+function init() {
+  console.log('Initializing...')
+  document.querySelector('.select-wahl-partei').addEventListener('change', event => {
     if (!event.target.value) {
+      console.error("No value set?")
       return
     }
-    console.log('Show party data of ' + event.target.value)
-    party = event.target.value
-    geojson.eachLayer(function (layer) {
-      ags = layer.feature.properties.ags
-      fraction = Math.floor(
-        (colors.length - 1) *
-          ((electionData[party][ags] / electionData['_absolute'][ags]) /
-            electionData[party]['_highest_ratio']),
-      )
-      layer.setStyle({
-        fillColor: colors[fraction],
-        fillOpacity: 1.0,
-        weight: 0.8,
-      })
-    })
-    info.update()
+    console.log('start loading')
+    wahl = JSON.parse(event.target.value)["wahl"]
+    partei = JSON.parse(event.target.value)["partei"]
+    electionData = undefined // unset electionData, so we don't accidentally display data from former selection
+    updateMap(wahl, partei)
   })
+  partei = "AfD"
+  updateMap("eu2019", "AfD")
 }

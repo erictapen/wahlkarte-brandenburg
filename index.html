@@ -19,21 +19,17 @@
 <div id="mapid" style="height: 800px;"></div>
 
 <div id="menu" style="position: absolute; top: 10px; right: 10px;">
-    <select class="select-wahl" name="select-wahl">
-    <option value="">Wahl auswählen</option>
-        <option value="eu2019">Europawahl 2019</option>
-        <option value="eu2014">Europawahl 2014</option>
-    </select>
 
-    <select class="select-partei" name="select-partei">
-    <option value="">Partei auswählen</option>
-        <option value="AfD">AfD</option>
-        <option value="CDU">CDU</option>
-        <option value="DIE RECHTE">DIE RECHTE</option>
-        <option value="FAMILIE">FAMILIE</option>
-        <option value="III. Weg">III. Weg</option>
-        <option value="NPD">NPD</option>
-        <option value="DIE LINKE">DIE LINKE</option>
+    <select class="select-wahl-partei">
+        <optgroup label="Europawahl 2019">
+            <option value="{ &quot;wahl&quot;: &quot;eu2019&quot;, &quot;partei&quot;: &quot;AfD&quot; }">AfD</option>
+            <option value="{ &quot;wahl&quot;: &quot;eu2019&quot;, &quot;partei&quot;: &quot;CDU&quot; }">CDU</option>
+        </optgroup>
+        <optgroup label="Europawahl 2014">
+            <option value="{ &quot;wahl&quot;: &quot;eu2014&quot;, &quot;partei&quot;: &quot;AfD&quot; }">AfD</option>
+            <option value="{ &quot;wahl&quot;: &quot;eu2014&quot;, &quot;partei&quot;: &quot;CDU&quot; }">CDU</option>
+        </optgroup>
+
     </select>
 </div>
 
