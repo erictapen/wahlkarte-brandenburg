@@ -144,7 +144,6 @@ function init() {
   parentElement = document.getElementById("menu")
   selectElement = document.createElement("select")
   selectElement.id = "select-wahl-partei"
-  selectElement.style = "position: absolute; top: 10px; right: 10px;"
   parentElement.appendChild(selectElement)
   selectElement.addEventListener('change', event => {
     if (!event.target.value) {
