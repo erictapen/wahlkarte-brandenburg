@@ -102,15 +102,15 @@ loadJSON('boundaries.json', function (data) {
 
 // colors from https://colorbrewer2.org/#type=sequential&scheme=Greys&n=9
 var colors = [
-  '#000000',
-  '#252525',
-  '#525252',
-  '#737373',
-  '#969696',
-  '#bdbdbd',
-  '#d9d9d9',
+  '#ffffff',
   '#f0f0f0',
-  '#ffffff'
+  '#d9d9d9',
+  '#bdbdbd',
+  '#969696',
+  '#737373',
+  '#525252',
+  '#252525',
+  '#000000'
 ]
 
 // Reload (cached) election data, paint the individual regions
