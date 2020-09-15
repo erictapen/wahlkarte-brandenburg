@@ -169,10 +169,17 @@ function init() {
           selectElement.appendChild(option)
         })
     }
+
+    selectElement = document.getElementById("select-wahl-partei")
+    if ("createEvent" in document) {
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent("change", false, true);
+        selectElement.dispatchEvent(evt);
+    }
+    else
+        selectElement.fireEvent("onchange");
   }, function (xhr) {
     console.error(xhr)
   })
 
-  partei = "AfD"
-  updateMap("eu2019", "Europawahl 2019", "AfD")
 }
