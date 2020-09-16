@@ -139,5 +139,19 @@ generate_election_results(
         }
     )
 
+generate_election_results(
+    rawfile = "DL_BB_LT2014.xlsx",
+    outfile = "lt2014.json",
+    sheetname = "Zweitstimme",
+    human_readable_name = "Landtagswahl 2014",
+    first_party_index = 22, # V
+    end_row = 3679,
+    keys = {
+        "Landkreisnummer": "D",
+        "AGS": "B",
+        "Gültige Stimmen": "U"
+        }
+    )
+
 write_select_options(select_options)
 
