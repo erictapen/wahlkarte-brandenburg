@@ -125,5 +125,19 @@ generate_election_results(
         }
     )
 
+generate_election_results(
+    rawfile = "DL_BB_KW2014.xlsx",
+    outfile = "kw2014.json",
+    sheetname = "Ergebnis_2",
+    human_readable_name = "Kommunalwahl 2014",
+    first_party_index = 18, # R
+    end_row = 3726,
+    keys = {
+        "Landkreisnummer": "C",
+        "AGS": "B",
+        "Gültige Stimmen": "Q"
+        }
+    )
+
 write_select_options(select_options)
 
