@@ -112,6 +112,20 @@ generate_election_results(
     )
 
 generate_election_results(
+    rawfile = "DL_BB_BU2017.xlsx",
+    outfile = "bu2017.json",
+    sheetname = "Zweitstimme",
+    human_readable_name = "Bundestagswahl 2017",
+    first_party_index = 22, # V
+    end_row = 3701,
+    keys = {
+        "Landkreisnummer": "D",
+        "AGS": "B",
+        "Gültige Stimmen": "U"
+        }
+    )
+
+generate_election_results(
     rawfile = "DL_BB_EU2014.xlsx",
     outfile = "eu2014.json",
     sheetname = "Ergebnis",
@@ -150,6 +164,20 @@ generate_election_results(
         "Landkreisnummer": "D",
         "AGS": "B",
         "Gültige Stimmen": "U"
+        }
+    )
+
+generate_election_results(
+    rawfile = "DL_BB_BU2013.xlsx",
+    outfile = "bu2013.json",
+    sheetname = "Zweitstimme",
+    human_readable_name = "Bundestagswahl 2013",
+    first_party_index = 18, # R
+    end_row = 3650,
+    keys = {
+        "Landkreisnummer": "C",
+        "AGS": "B",
+        "Gültige Stimmen": "Q"
         }
     )
 
