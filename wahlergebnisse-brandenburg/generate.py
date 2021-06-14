@@ -14,6 +14,9 @@ def excel_column_name(n):
         name = chr(r + ord('A')) + name
     return name
 
+# Generic function to generate JSON from Excel files provided by the state
+# Brandenburg. The states interface is by no means stable, so this function
+# will very likely need adaption over time.
 def generate_election_results(*,
         rawfile,
         outfile,
@@ -26,7 +29,8 @@ def generate_election_results(*,
             "Landkreisnummer": "C",
             "AGS": "B",
             "Gültige Stimmen": "S"
-        }
+        },
+        source
             ):
     workbook = load_workbook(filename = sys.argv[1] + rawfile)
 
@@ -54,6 +58,7 @@ def generate_election_results(*,
 
     # prepare overall structure of result dict
     result = dict()
+    result["_source"] = source
     result["_absolute"] = defaultdict(int)
     for party in parties:
         result[party] = defaultdict(int)
@@ -81,6 +86,8 @@ def generate_election_results(*,
     # Determine what was the highest percentage the party ever gathered in a given Wahlbezirk.
     # This is useful for visualization as we don't have to calculate it in the browser.
     for party, value in result.items():
+        if party.startswith("_"):
+            continue
         highest_ratio = 0.0
         for ags, votes in result[party].items():
             highest_ratio = max(highest_ratio, votes / result['_absolute'][ags])
@@ -108,6 +115,11 @@ generate_election_results(
         "Landkreisnummer": "C",
         "AGS": "B",
         "Gültige Stimmen": "S"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/LT2019/downloads.html",
+        "url_file": "https://www.statistik-berlin-brandenburg.de/publikationen/dowmies/DL_BB_EU2019.xlsx"
         }
     )
 
@@ -122,6 +134,11 @@ generate_election_results(
         "Landkreisnummer": "D",
         "AGS": "B",
         "Gültige Stimmen": "U"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/BU2017/downloads.html",
+        "url_file": "https://www.wahlergebnisse.brandenburg.de/wahlen/BU2017/downloads/DL_BB_BU2017.xlsx"
         }
     )
 
@@ -136,6 +153,11 @@ generate_election_results(
         "Landkreisnummer": "C",
         "AGS": "B",
         "Gültige Stimmen": "Q"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/EU2014/downloads.html",
+        "url_file": "https://www.wahlergebnisse.brandenburg.de/wahlen/EU2014/downloads/DL_BB_EU2014.xlsx"
         }
     )
 
@@ -150,6 +172,11 @@ generate_election_results(
         "Landkreisnummer": "C",
         "AGS": "B",
         "Gültige Stimmen": "Q"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/KO2014/downloads.html",
+        "url_file": "https://www.wahlergebnisse.brandenburg.de/wahlen/KO2014/downloads/DL_BB_KW2014.xlsx"
         }
     )
 
@@ -164,6 +191,11 @@ generate_election_results(
         "Landkreisnummer": "D",
         "AGS": "B",
         "Gültige Stimmen": "U"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/LT2014/downloads.html",
+        "url_file": "https://www.wahlergebnisse.brandenburg.de/wahlen/LT2014/downloads/DL_BB_LT2014.xlsx"
         }
     )
 
@@ -178,6 +210,11 @@ generate_election_results(
         "Landkreisnummer": "C",
         "AGS": "B",
         "Gültige Stimmen": "Q"
+        },
+    source = {
+        "text": "Der Landeswahlleiter für Brandenburg",
+        "url_index": "https://wahlergebnisse.brandenburg.de/wahlen/BU2013/downloads.html",
+        "url_file": "https://www.wahlergebnisse.brandenburg.de/wahlen/BU2013/downloads/DL_BB_BU2013.xlsx"
         }
     )
 
