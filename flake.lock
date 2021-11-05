@@ -5,29 +5,26 @@
       "locked": {
         "lastModified": 1588024464,
         "narHash": "sha256-cAipdQtqtcfKnn1EXeNlP4nMC/+BqkyGrZAbLeJBj6w=",
-        "ref": "master",
-        "rev": "91b714819d3b4cd5e6f2f999a3ddf2c7f0d02e36",
-        "revCount": 1,
         "type": "git",
-        "url": "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw"
+        "url": "file:///home/kerstin/git/mmz/wahlkarte/generate-boundaries/raw"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/justin/git/mmz/wahlkarte/generate-boundaries/raw"
+        "url": "file:///home/kerstin/git/mmz/wahlkarte/generate-boundaries/raw"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1597943282,
-        "narHash": "sha256-G/VQBlqO7YeFOSvn29RqdvABZxmQBtiRYVA6kjqWZ6o=",
+        "lastModified": 1636066614,
+        "narHash": "sha256-6XUf07A1IYXmSE4/2qsxLZ4L19C+y9khqxbzkEErJ3Q=",
         "owner": "NixOS",
         "repo": "Nixpkgs",
-        "rev": "c59ea8b8a0e7f927e7291c14ea6cd1bd3a16ff38",
+        "rev": "96ded94eb0a8ca3781fb52087b40e09425e384cb",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "ref": "nixos-21.05",
         "repo": "Nixpkgs",
         "type": "github"
       }
