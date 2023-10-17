@@ -5,6 +5,9 @@
       "locked": {
         "lastModified": 1588024464,
         "narHash": "sha256-cAipdQtqtcfKnn1EXeNlP4nMC/+BqkyGrZAbLeJBj6w=",
+        "ref": "refs/heads/master",
+        "rev": "91b714819d3b4cd5e6f2f999a3ddf2c7f0d02e36",
+        "revCount": 1,
         "type": "git",
         "url": "file:///home/kerstin/git/mmz/wahlkarte/generate-boundaries/raw"
       },
@@ -15,11 +18,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1636066614,
-        "narHash": "sha256-6XUf07A1IYXmSE4/2qsxLZ4L19C+y9khqxbzkEErJ3Q=",
+        "lastModified": 1659914493,
+        "narHash": "sha256-lkA5X3VNMKirvA+SUzvEhfA7XquWLci+CGi505YFAIs=",
         "owner": "NixOS",
         "repo": "Nixpkgs",
-        "rev": "96ded94eb0a8ca3781fb52087b40e09425e384cb",
+        "rev": "022caabb5f2265ad4006c1fa5b1ebe69fb0c3faf",
         "type": "github"
       },
       "original": {
