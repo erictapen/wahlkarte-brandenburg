@@ -2,7 +2,7 @@
   description = "Wahlkarte Brandenburg";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/Nixpkgs/nixos-21.05";
+    nixpkgs.url = "github:NixOS/Nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     brandenburg-pbf = {
       type = "git";
