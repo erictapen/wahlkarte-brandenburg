@@ -103,6 +103,9 @@
               darkhttpd
               cargo
               rustc
+              rustfmt
+              clippy
+              crate2nix
               python3Packages.openpyxl
             ];
           };
